@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/update_trip_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+            android:id="@+id/update_trip_country_tv"
+            android:layout_width="100dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="44dp"
+            android:text="Country"
+            android:textColor="@color/info"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Spinner
+            android:id="@+id/update_trip_country_spinner"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="38dp"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@color/info"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/update_trip_country_tv"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/update_trip_place_tv"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="60dp"
+            android:text="Place"
+            android:textColor="@color/info"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/update_trip_country_tv" />
+
+        <TextView
+            android:id="@+id/update_trip_starts_at_tv"
+            android:layout_width="100dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="60dp"
+            android:text="Starts At"
+            android:textColor="@color/info"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/update_trip_place_tv" />
+
+        <EditText
+            android:id="@+id/update_trip_starts_at_et"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@color/info"
+            android:ems="10"
+            android:inputType="text"
+            android:text="Starts At"
+            android:textColor="@color/info"
+            app:layout_constraintBaseline_toBaselineOf="@+id/update_trip_starts_at_tv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/update_trip_starts_at_tv" />
+
+        <TextView
+            android:id="@+id/update_trip_duration_tv"
+            android:layout_width="100dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="60dp"
+            android:text="Duration"
+            android:textColor="@color/info"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/update_trip_starts_at_tv" />
+
+        <EditText
+            android:id="@+id/update_trip_duration_et"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@color/info"
+            android:ems="10"
+            android:inputType="number"
+            android:text="Duration (in weeks)"
+            android:textColor="@color/info"
+            app:layout_constraintBaseline_toBaselineOf="@+id/update_trip_duration_tv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/update_trip_duration_tv" />
+
+        <Button
+            android:id="@+id/update_trip_btn"
+            android:layout_width="287dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:background="@drawable/round_btn"
+            android:text="Update"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/update_trip_mark_done_tv"
+            app:layout_constraintVertical_bias="0.747" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/update_trip_place_input_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/update_trip_place_tv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/update_trip_place_tv">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/update_trip_place_et"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:backgroundTint="@color/info"
+                android:hint="Place" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/update_trip_mark_done_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="60dp"
+            android:text="Mark Done"
+            android:textColor="@color/info"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/update_trip_choose_photos_btn" />
+
+        <CheckBox
+            android:id="@+id/update_trip_mark_done_cb"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/update_trip_mark_done_tv"
+            app:layout_constraintStart_toEndOf="@+id/update_trip_mark_done_tv" />
+
+        <Button
+            android:id="@+id/update_trip_choose_photos_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="60dp"
+            android:background="@drawable/round_btn"
+            android:text="Choose Photos"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/update_trip_duration_et" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
