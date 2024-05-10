@@ -1,36 +1,57 @@
 package com.example.ilinktrip
 
-import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import interfaces.TripFeedItemClickListener
+import modules.tripsFeed.TripsFeedFragment
 
-class MainActivity : AppCompatActivity(), LandingPageFragment.OnGetStartedClickListener {
+class MainActivity : AppCompatActivity(), TripFeedItemClickListener {
     private var displayedFragment: Fragment? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val landingPageFragment = LandingPageFragment.newInstance()
-        landingPageFragment.setOnGetStartedClickListener(this)
-        displayFragment(landingPageFragment)
+        val homeBtn = findViewById<ImageButton>(R.id.home_ib)
+        val addTripBtn = findViewById<ImageButton>(R.id.add_trip_ib)
+        val profileBtn = findViewById<ImageButton>(R.id.profile_ib)
+
+        val homeFragment = TripsFeedFragment.newInstance()
+        homeFragment.setOnTripClickListener(this)
+
+        val addTripFragment = AddTripFragment.newInstance()
+//        val profileFragment =
+
+        displayFragment(homeFragment)
+
+        homeBtn.setOnClickListener {
+            displayFragment(homeFragment)
+        }
+
+        addTripBtn.setOnClickListener {
+            displayFragment(addTripFragment)
+        }
+
+        profileBtn.setOnClickListener {
+//            displayFragment(profileFragment)
+        }
     }
 
     private fun displayFragment(fragment: Fragment) {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         if (displayedFragment != null) {
-            fragmentTransaction.replace(R.id.activity_main_fragment, fragment)
+            fragmentTransaction.replace(R.id.acitivty_main_fragment, fragment)
         } else {
-            fragmentTransaction.add(R.id.activity_main_fragment, fragment)
+            fragmentTransaction.add(R.id.acitivty_main_fragment, fragment)
         }
         fragmentTransaction.addToBackStack("ADD_TRIP")
         fragmentTransaction.commit()
         displayedFragment = fragment
     }
 
-    override fun onGetStartedClick() {
-        val registerFragment = RegisterFragment.newInstance()
-        displayFragment(registerFragment)
+    override fun onTripClick(position: Int) {
+        val fragment = AddTripFragment.newInstance()
+        displayFragment(fragment)
     }
 }

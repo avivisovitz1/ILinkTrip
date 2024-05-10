@@ -16,4 +16,9 @@
     <string name="password">Password</string>
     <string name="confirm_password">Again</string>
     <string name="register_btn">Submit</string>
+
+    <!-- Main Activity Bar -->
+    <string name="home_tab">Home</string>
+    <string name="add_trip_tab">Add Trip</string>
+    <string name="profile_tab">Profile</string>
 </resources>
