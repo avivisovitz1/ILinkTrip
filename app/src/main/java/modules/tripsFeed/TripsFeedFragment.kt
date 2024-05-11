@@ -9,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.os.bundleOf
+import androidx.navigation.Navigation
 import com.example.ilinktrip.LandingPageFragment
 import com.example.ilinktrip.R
 import com.example.ilinktrip.placeholder.PlaceholderContent
@@ -38,6 +40,26 @@ class TripsFeedFragment : Fragment() {
 
         val adapter = TripRecyclerViewAdapter(trips, listener)
         tripsRecyclerView?.adapter = adapter
+
+        adapter.listener = object : TripFeedItemClickListener {
+            override fun onTripClick(position: Int) {
+                val trip = trips?.get(position)
+
+                if (trip != null) {
+                    Navigation.findNavController(view)
+                        .navigate(
+                            TripsFeedFragmentDirections.actionTripsFeedFragmentToTripDetailsFragment(
+                                trip.userName,
+                                trip.country,
+                                trip.place,
+                                trip.startsAt.toString(),
+                                trip.durationInWeeks
+                            )
+                        )
+                }
+            }
+
+        }
         return view
     }
 

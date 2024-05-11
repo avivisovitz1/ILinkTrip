@@ -5,7 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    tools:menu="@menu/main_activity_menu">
 
     <include
         android:id="@+id/include3"
@@ -13,109 +14,42 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <View
-        android:id="@+id/main_activity_bar"
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/main_fragment_container"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
-        android:layout_height="83dp"
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toTopOf="@+id/main_bottom_nav"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include3"
+        app:navGraph="@navigation/main_nav_graph" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/main_bottom_nav"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
         android:background="@color/primary_blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageButton
-        android:id="@+id/home_ib"
-        android:layout_width="35dp"
-        android:layout_height="31dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="8dp"
-        android:background="@null"
-        android:contentDescription="@string/home_tab"
-        android:src="@drawable/home"
-        app:layout_constraintStart_toStartOf="@+id/main_activity_bar"
-        app:layout_constraintTop_toTopOf="@+id/main_activity_bar" />
-
-    <ImageButton
-        android:id="@+id/add_trip_ib"
-        android:layout_width="0dp"
-        android:layout_height="31dp"
-        android:layout_marginTop="8dp"
-        android:background="@null"
-        android:contentDescription="@string/add_trip_tab"
-        android:src="@drawable/plus"
-        app:layout_constraintEnd_toStartOf="@+id/profile_ib"
-        app:layout_constraintHorizontal_bias="0.551"
-        app:layout_constraintStart_toEndOf="@+id/home_ib"
-        app:layout_constraintTop_toTopOf="@+id/main_activity_bar" />
-
-    <ImageButton
-        android:id="@+id/profile_ib"
-        android:layout_width="53dp"
-        android:layout_height="31dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="30dp"
-        android:background="@null"
-        android:contentDescription="@string/profile_tab"
-        android:src="@drawable/profile_tab"
-        app:layout_constraintEnd_toEndOf="@+id/main_activity_bar"
-        app:layout_constraintTop_toTopOf="@+id/main_activity_bar" />
-
-    <TextView
-        android:id="@+id/home_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="3dp"
-        android:text="@string/home_tab"
-        android:textAlignment="center"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="@+id/main_activity_bar"
-        app:layout_constraintEnd_toStartOf="@+id/add_trip_tv"
-        app:layout_constraintHorizontal_bias="0.209"
-        app:layout_constraintStart_toStartOf="@+id/main_activity_bar"
-        app:layout_constraintTop_toBottomOf="@+id/home_ib"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/add_trip_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginTop="3dp"
-        android:text="@string/add_trip_tab"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/profile_ib"
-        app:layout_constraintStart_toEndOf="@+id/home_ib"
-        app:layout_constraintTop_toBottomOf="@+id/add_trip_ib"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/profile_tv"
-        android:layout_width="52dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="3dp"
-        android:text="@string/profile_tab"
-        android:textAlignment="center"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="@+id/add_trip_tv"
-        app:layout_constraintEnd_toEndOf="@+id/main_activity_bar"
-        app:layout_constraintHorizontal_bias="0.791"
-        app:layout_constraintStart_toEndOf="@+id/add_trip_tv"
-        app:layout_constraintTop_toBottomOf="@+id/profile_ib"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/acitivty_main_fragment"
-        android:name="modules.tripsFeed.TripsFeedFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/main_activity_bar"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include3" />
+        app:menu="@menu/main_activity_menu" />
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/main_tool_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/primary_blue"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="@+id/include3"
+        app:layout_constraintStart_toStartOf="@+id/include3"
+        app:layout_constraintTop_toTopOf="@+id/include3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

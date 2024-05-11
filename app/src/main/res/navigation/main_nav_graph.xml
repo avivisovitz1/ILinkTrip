@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/tripsFeedFragment">
+
+    <fragment
+        android:id="@+id/tripsFeedFragment"
+        android:name="modules.tripsFeed.TripsFeedFragment"
+        android:label="fragment_trips_feed_list"
+        tools:layout="@layout/fragment_trips_feed_list">
+        <action
+            android:id="@+id/action_tripsFeedFragment_to_tripDetailsFragment"
+            app:destination="@id/tripDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tripDetailsFragment"
+        android:name="modules.tripsFeed.TripDetailsFragment"
+        android:label="fragment_trip_details"
+        tools:layout="@layout/fragment_trip_details">
+        <argument
+            android:name="userName"
+            android:defaultValue="&quot;&quot;"
+            app:argType="string" />
+        <argument
+            android:name="country"
+            android:defaultValue='""'
+            app:argType="string" />
+        <argument
+            android:name="place"
+            android:defaultValue='""'
+            app:argType="string" />
+        <argument
+            android:name="startsAt"
+            android:defaultValue='""'
+            app:argType="string" />
+        <argument
+            android:name="duration"
+            android:defaultValue="0"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/addTripFragment"
+        android:name="com.example.ilinktrip.AddTripFragment"
+        android:label="AddTripFragment"
+        tools:layout="@layout/fragment_add_trip" />
+</navigation>
