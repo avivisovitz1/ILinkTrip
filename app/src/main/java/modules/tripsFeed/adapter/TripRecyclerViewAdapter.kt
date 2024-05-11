@@ -9,7 +9,7 @@ import models.Trip
 
 class TripRecyclerViewAdapter(
     var trips: MutableList<Trip>?,
-    val listener: TripFeedItemClickListener?
+    var listener: TripFeedItemClickListener?
 ) :
     RecyclerView.Adapter<TripViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TripViewHolder {
@@ -25,4 +25,9 @@ class TripRecyclerViewAdapter(
 
         holder.bind(trip)
     }
+
+    fun setOnItemClickListener(listener: TripFeedItemClickListener) {
+        this.listener = listener
+    }
 }
+
