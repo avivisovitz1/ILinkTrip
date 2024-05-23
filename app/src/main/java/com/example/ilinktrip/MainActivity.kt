@@ -1,21 +1,14 @@
 package com.example.ilinktrip
 
 import android.os.Bundle
-import android.widget.ImageButton
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import interfaces.TripFeedItemClickListener
-import modules.tripsFeed.TripsFeedFragment
 
 class MainActivity : AppCompatActivity() {
     private var navControler: NavController? = null
@@ -28,18 +21,28 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.main_fragment_container) as NavHostFragment
         navControler = navHostFragment?.navController
 
-        val appBarConf = navControler?.let { AppBarConfiguration(it.graph) }
-        navControler?.let {
-            if (appBarConf != null) {
-                findViewById<Toolbar>(R.id.main_tool_bar).setupWithNavController(
-                    it,
-                    appBarConf
-                )
-            }
-        }
+        val toolbar = findViewById<Toolbar>(R.id.main_tool_bar)
+        setSupportActionBar(toolbar)
+        navControler?.let { NavigationUI.setupActionBarWithNavController(this, it) }
 
         val bottomNavigationView: BottomNavigationView = findViewById(R.id.main_bottom_nav)
         navControler?.let { NavigationUI.setupWithNavController(bottomNavigationView, it) }
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_activity_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (navControler != null) {
+            if (item.itemId == android.R.id.home) {
+                navControler!!.popBackStack()
+            } else if (item.itemId == R.id.profileFragment) {
+                navControler!!.navigate(R.id.action_global_profileFragment)
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 }
