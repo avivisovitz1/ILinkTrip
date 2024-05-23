@@ -39,7 +39,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/main_activity_menu" />
+        app:menu="@menu/main_bottom_bar" />
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/main_tool_bar"
@@ -50,6 +50,9 @@
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="@+id/include3"
         app:layout_constraintStart_toStartOf="@+id/include3"
-        app:layout_constraintTop_toTopOf="@+id/include3" />
+        app:layout_constraintTop_toTopOf="@+id/include3"
+        app:menu="@menu/main_activity_menu"
+        app:titleCentered="true"
+        app:titleTextColor="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,14 +1,29 @@
 package models
 
 import org.threeten.bp.LocalDate
-import org.threeten.bp.format.DateTimeFormatter
 import java.util.Locale
 
 class Model private constructor() {
     companion object {
         private var _instance: Model = Model()
 
-        var data: MutableList<Trip> = mutableListOf(
+        val user: User = User(
+            "323100347", "avivisovitz@gmail.com", "Aviv", "Isovitz",
+            22, "male", "0528293085", "Aviv1234"
+        )
+
+        var users: MutableList<User> = mutableListOf(
+            user,
+            User(
+                "223111892",
+                "michalIsovitz@gmail.com", "Michal", "Isovitz",
+                19, "female", "0528293088", "MichalIso12"
+            )
+        )
+
+        var userFavoriteTravelersIds: MutableSet<String> = mutableSetOf("223111892")
+
+        var trips: MutableList<Trip> = mutableListOf(
             Trip(
                 "Aviv Isovitz",
                 "Argentina",
@@ -80,11 +95,26 @@ class Model private constructor() {
         }
     }
 
+    fun getUser(): User {
+        return user
+    }
+
     fun getAllTrips(): MutableList<Trip> {
-        return data
+        return trips
+    }
+
+    fun getUserFavoriteTravelers(): MutableList<User> {
+        return users.filter { user -> userFavoriteTravelersIds.contains(user.id) }.toMutableList()
+    }
+
+    fun removeTravelerFromFavoriteList(id: String): Boolean = userFavoriteTravelersIds.remove(id)
+
+    fun getUserTrips(): MutableList<Trip> {
+        return trips.filter { trip -> trip.userName == user.firstName + " " + user.lastName }
+            .toMutableList()
     }
 
     fun addTrip(trip: Trip) {
-        data = (data + trip).toMutableList()
+        trips = (trips + trip).toMutableList()
     }
 }

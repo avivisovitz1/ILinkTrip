@@ -12,7 +12,6 @@ import models.Trip
 class TripViewHolder(
     itemView: View,
     listener: TripFeedItemClickListener?,
-    trips: MutableList<Trip>?
 ) :
     RecyclerView.ViewHolder(itemView) {
     var trip: Trip? = null
