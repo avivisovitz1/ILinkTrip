@@ -1,4 +1,4 @@
-package modules.tripsFeed.adapter
+package com.example.ilinktrip.modules.tripsFeed.adapter
 
 import android.view.View
 import android.widget.ImageButton
@@ -6,8 +6,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ilinktrip.R
-import interfaces.TripFeedItemClickListener
-import models.Trip
+import com.example.ilinktrip.interfaces.TripFeedItemClickListener
+import com.example.ilinktrip.models.Trip
 
 class TripViewHolder(
     itemView: View,
@@ -31,7 +31,8 @@ class TripViewHolder(
 
     fun bind(trip: Trip?) {
         this.trip = trip
-        this.userNameTv?.text = trip?.userName
+        this.userNameTv?.text = "Shilshul"
+        //TODO: this.userNameTv?.text = trip?.userName
         this.userProfileIb?.setImageResource(R.drawable.girl_avatar)
         this.countryPlaceTv?.text = trip?.country + ", " + trip?.place
     }

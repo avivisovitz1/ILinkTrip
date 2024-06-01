@@ -1,6 +1,6 @@
-package interfaces
+package com.example.ilinktrip.interfaces
 
-import models.User
+import com.example.ilinktrip.models.User
 
 interface RemoveFavoriteTravelerClickListener {
     fun onRemoveFavoriteClick(user: User)

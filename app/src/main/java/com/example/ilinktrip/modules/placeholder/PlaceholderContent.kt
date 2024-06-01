@@ -1,4 +1,4 @@
-package modules.placeholder
+package com.example.ilinktrip.modules.placeholder
 
 import java.util.ArrayList
 import java.util.HashMap

@@ -1,4 +1,4 @@
-package modules.favoriteTravelersList.adapter
+package com.example.ilinktrip.modules.favoriteTravelersList.adapter
 
 import android.view.View
 import android.widget.Button
@@ -7,9 +7,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ilinktrip.R
-import interfaces.RemoveFavoriteTravelerClickListener
-import models.Model
-import models.User
+import com.example.ilinktrip.interfaces.RemoveFavoriteTravelerClickListener
+import com.example.ilinktrip.models.Model
+import com.example.ilinktrip.models.User
 
 class TravelerViewHolder(
     itemView: View,

@@ -1,4 +1,4 @@
-package modules.favoriteTravelersList
+package com.example.ilinktrip.modules.favoriteTravelersList
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,9 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.ilinktrip.R
-import models.Model
-import models.User
-import modules.favoriteTravelersList.adapter.TravelerRecyclerViewAdapter
+import com.example.ilinktrip.models.Model
+import com.example.ilinktrip.models.User
+import com.example.ilinktrip.modules.favoriteTravelersList.adapter.TravelerRecyclerViewAdapter
 
 class FavoriteTravelersListFragment : Fragment() {
     private var travelersListRecyclerView: RecyclerView? = null
@@ -26,7 +26,8 @@ class FavoriteTravelersListFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_travelers_list, container, false)
 
-        travelers = Model.instance().getUserFavoriteTravelers()
+        travelers = mutableListOf()
+//TODO:        travelers = Model.instance().getUserFavoriteTravelers()
 
 
         travelersListRecyclerView = view.findViewById(R.id.favorite_traveler_recycler_view)
