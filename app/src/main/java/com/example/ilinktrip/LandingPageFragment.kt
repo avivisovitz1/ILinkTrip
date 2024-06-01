@@ -39,8 +39,6 @@ class LandingPageFragment : Fragment() {
         fun newInstance() =
             LandingPageFragment().apply {
                 arguments = Bundle().apply {
-//                    putString(ARG_PARAM1, param1)
-//                    putString(ARG_PARAM2, param2)
                 }
             }
     }

@@ -1,4 +1,4 @@
-package modules.tripsFeed
+package com.example.ilinktrip.modules.tripsFeed
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -48,7 +48,7 @@ class TripDetailsFragment : Fragment() {
         val linkWithTravelerBtn = view.findViewWithTag<Button>(R.id.trip_link_with_traveler_btn)
 
         userNameTv.text = userName
-        countryPlaceTv.text = country + place
+        countryPlaceTv.text = country + ", " + place
         startsAtTv.text = startsAt
         durationTv.text = duration.toString() + " Weeks"
 

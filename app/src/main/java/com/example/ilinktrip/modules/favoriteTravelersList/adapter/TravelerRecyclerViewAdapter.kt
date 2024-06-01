@@ -1,12 +1,12 @@
-package modules.favoriteTravelersList.adapter
+package com.example.ilinktrip.modules.favoriteTravelersList.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ilinktrip.R
-import interfaces.RemoveFavoriteTravelerClickListener
-import models.Model
-import models.User
+import com.example.ilinktrip.interfaces.RemoveFavoriteTravelerClickListener
+import com.example.ilinktrip.models.Model
+import com.example.ilinktrip.models.User
 
 class TravelerRecyclerViewAdapter(
     private var travelers: MutableList<User>?,
@@ -21,7 +21,7 @@ class TravelerRecyclerViewAdapter(
 
         listener = object : RemoveFavoriteTravelerClickListener {
             override fun onRemoveFavoriteClick(user: User) {
-                Model.instance().removeTravelerFromFavoriteList(user.id)
+//TODO:                Model.instance().removeTravelerFromFavoriteList(user.id)
                 travelers?.remove(user)
                 notifyDataSetChanged()
             }

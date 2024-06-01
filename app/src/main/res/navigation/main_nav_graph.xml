@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/tripsFeedFragment"
-        android:name="modules.tripsFeed.TripsFeedFragment"
+        android:name="com.example.ilinktrip.modules.tripsFeed.TripsFeedFragment"
         android:label="Trips Nearby"
         tools:layout="@layout/fragment_trips_feed_list">
         <action
@@ -20,7 +20,7 @@
     </fragment>
     <fragment
         android:id="@+id/tripDetailsFragment"
-        android:name="modules.tripsFeed.TripDetailsFragment"
+        android:name="com.example.ilinktrip.modules.tripsFeed.TripDetailsFragment"
         android:label="Trip Details"
         tools:layout="@layout/fragment_trip_details">
         <argument
@@ -51,7 +51,7 @@
         tools:layout="@layout/fragment_add_trip" />
     <fragment
         android:id="@+id/profileFragment"
-        android:name="modules.profile.ProfileFragment"
+        android:name="com.example.ilinktrip.modules.profile.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile">
         <action
@@ -72,12 +72,12 @@
         <argument
             android:name="userDetails"
             android:defaultValue="@null"
-            app:argType="models.User"
+            app:argType="com.example.ilinktrip.models.User"
             app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/favoriteTravelersListFragment"
-        android:name="modules.favoriteTravelersList.FavoriteTravelersListFragment"
+        android:name="com.example.ilinktrip.modules.favoriteTravelersList.FavoriteTravelersListFragment"
         android:label="@string/my_favorites"
         tools:layout="@layout/fragment_travelers_list" />
 

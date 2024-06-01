@@ -1,4 +1,4 @@
-package modules.profile
+package com.example.ilinktrip.modules.profile
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -11,11 +11,15 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.navigation.Navigation
 import com.example.ilinktrip.R
-import models.Model
-import models.User
+import com.example.ilinktrip.models.Model
+import com.example.ilinktrip.models.User
 
 class ProfileFragment : Fragment() {
-    val user: User = Model.instance().getUser()
+    private val user: User = User(
+        "323100347", "avivisovitz@gmail.com", "Aviv", "Isovitz",
+        22, "male", "0528293085", "Aviv1234"
+    )
+//TODO:    val user: User = Model.instance().getUser()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,13 +51,14 @@ class ProfileFragment : Fragment() {
                 .navigate(ProfileFragmentDirections.actionProfileFragmentToFavoriteTravelersListFragment())
         }
 
-        editProfileBtn.setOnClickListener {
-            Navigation.findNavController(view).navigate(
-                ProfileFragmentDirections.actionProfileFragmentToRegisterFragment(
-                    Model.instance().getUser()
-                )
-            )
-        }
+//TODO: return this code when can access user
+//        editProfileBtn.setOnClickListener {
+//            Navigation.findNavController(view).navigate(
+//                ProfileFragmentDirections.actionProfileFragmentToRegisterFragment(
+//                    Model.instance().getUser()
+//                )
+//            )
+//        }
 
         return view
     }
