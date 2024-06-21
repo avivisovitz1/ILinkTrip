@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.navigation.fragment.navArgs
-import com.example.ilinktrip.R
+import com.example.ilinktrip.models.Model
+import com.ilinktrip.R
 
 
 class TripDetailsFragment : Fragment() {
@@ -46,11 +48,17 @@ class TripDetailsFragment : Fragment() {
         val startsAtTv = view.findViewById<TextView>(R.id.trip_starts_at_tv)
         val durationTv = view.findViewById<TextView>(R.id.trip_duration_tv)
         val linkWithTravelerBtn = view.findViewWithTag<Button>(R.id.trip_link_with_traveler_btn)
+        val markFavoriteTraveler = view.findViewById<ImageButton>(R.id.trip_mark_favorite_traveler)
 
         userNameTv.text = userName
         countryPlaceTv.text = country + ", " + place
         startsAtTv.text = startsAt
         durationTv.text = duration.toString() + " Weeks"
+
+        markFavoriteTraveler.setOnClickListener {
+
+            Model.instance().addFavoriteTraveler("323100347", "323100346") {}
+        }
 
         return view
     }

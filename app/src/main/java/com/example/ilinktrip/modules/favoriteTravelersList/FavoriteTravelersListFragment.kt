@@ -7,14 +7,18 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.ilinktrip.R
+import com.example.ilinktrip.models.FavoriteTraveler
 import com.example.ilinktrip.models.Model
 import com.example.ilinktrip.models.User
 import com.example.ilinktrip.modules.favoriteTravelersList.adapter.TravelerRecyclerViewAdapter
+import com.ilinktrip.R
+import com.ilinktrip.databinding.FragmentTravelersListBinding
 
 class FavoriteTravelersListFragment : Fragment() {
     private var travelersListRecyclerView: RecyclerView? = null
-    private var travelers: MutableList<User>? = null
+    private var travelersIds: MutableList<String>? = null
+    private var adapter: TravelerRecyclerViewAdapter? = null
+    private var binding: FragmentTravelersListBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,20 +28,33 @@ class FavoriteTravelersListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_travelers_list, container, false)
+        binding = FragmentTravelersListBinding.inflate(inflater, container, false)
+        val view = binding!!.root;
 
-        travelers = mutableListOf()
-//TODO:        travelers = Model.instance().getUserFavoriteTravelers()
-
-
+        loadFavoriteTravelers()
         travelersListRecyclerView = view.findViewById(R.id.favorite_traveler_recycler_view)
-        travelersListRecyclerView?.setHasFixedSize(true)
-        travelersListRecyclerView?.layoutManager = LinearLayoutManager(context)
+        binding!!.favoriteTravelerRecyclerView.setHasFixedSize(true)
+        binding!!.favoriteTravelerRecyclerView.layoutManager = LinearLayoutManager(context)
 
-        val adapter = TravelerRecyclerViewAdapter(travelers)
+        adapter = TravelerRecyclerViewAdapter(travelersIds)
         travelersListRecyclerView?.adapter = adapter
-
         return view
+    }
+
+    fun loadFavoriteTravelers() {
+        binding!!.favoriteTravelerListProgressBar.visibility = View.VISIBLE
+
+        Model.instance().getUserFavoriteTravelers("323100347") { travelersIds ->
+            val travelersIdsList = travelersIds.toMutableList()
+            this.travelersIds = travelersIdsList
+            adapter?.setData(travelersIdsList)
+            binding!!.favoriteTravelerListProgressBar.visibility = View.GONE
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadFavoriteTravelers()
     }
 
     companion object {

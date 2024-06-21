@@ -29,8 +29,8 @@
 
     <ImageView
         android:id="@+id/register_app_logo"
-        android:layout_width="407dp"
-        android:layout_height="196dp"
+        android:layout_width="406dp"
+        android:layout_height="220dp"
         app:layout_constraintEnd_toEndOf="@+id/register_page_header"
         app:layout_constraintStart_toStartOf="@+id/register_page_header"
         app:layout_constraintTop_toTopOf="parent"
@@ -44,6 +44,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/register_page_body"
         app:layout_constraintEnd_toEndOf="@+id/register_page_body"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/register_page_header" />
+        app:layout_constraintTop_toBottomOf="@+id/register_app_logo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

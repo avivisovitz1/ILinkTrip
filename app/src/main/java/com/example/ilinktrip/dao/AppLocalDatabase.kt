@@ -5,11 +5,12 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.ilinktrip.application.ILinkTripApplication
+import com.example.ilinktrip.models.FavoriteTraveler
 import com.example.ilinktrip.models.LocalDateTypeConverter
 import com.example.ilinktrip.models.Trip
 import com.example.ilinktrip.models.User
 
-@Database(entities = [User::class, Trip::class], version = 2)
+@Database(entities = [User::class, Trip::class, FavoriteTraveler::class], version = 3)
 @TypeConverters(LocalDateTypeConverter::class)
 abstract class AppLocalDbRepository : RoomDatabase() {
     abstract fun userDao(): UserDao

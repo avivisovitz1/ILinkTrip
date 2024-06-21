@@ -3,6 +3,7 @@ package com.example.ilinktrip
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.ilinktrip.R
 
 class RegisterActivity : AppCompatActivity(), LandingPageFragment.OnGetStartedClickListener {
     private var displayedFragment: Fragment? = null

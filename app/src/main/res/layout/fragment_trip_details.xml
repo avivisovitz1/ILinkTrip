@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".modules.tripsFeed.TripDetailsFragment">
+    android:layout_height="match_parent">
+    <!--    tools:context=".modules.tripsFeed.TripDetailsFragment"-->
 
 
     <ImageView
@@ -146,5 +146,18 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/trip_user_profile_iv"
         app:layout_constraintTop_toBottomOf="@+id/trip_user_name_tv" />
+
+    <ImageButton
+        android:id="@+id/trip_mark_favorite_traveler"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:src="@drawable/star"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.257"
+        app:layout_constraintStart_toEndOf="@+id/trip_link_with_traveler_btn"
+        app:layout_constraintTop_toBottomOf="@+id/trip_duration_tv"
+        app:layout_constraintVertical_bias="0.184" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
