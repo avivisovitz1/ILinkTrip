@@ -3,21 +3,18 @@ package com.example.ilinktrip.modules.profile
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.navigation.Navigation
-import com.example.ilinktrip.R
-import com.example.ilinktrip.models.Model
 import com.example.ilinktrip.models.User
+import com.ilinktrip.R
 
 class ProfileFragment : Fragment() {
     private val user: User = User(
         "323100347", "avivisovitz@gmail.com", "Aviv", "Isovitz",
-        22, "male", "0528293085", "Aviv1234"
+        22, "male", "0528293085", "", "Aviv1234"
     )
 //TODO:    val user: User = Model.instance().getUser()
 

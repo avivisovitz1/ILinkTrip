@@ -3,9 +3,9 @@ package com.example.ilinktrip.modules.tripsFeed.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.ilinktrip.R
 import com.example.ilinktrip.interfaces.TripFeedItemClickListener
 import com.example.ilinktrip.models.Trip
+import com.ilinktrip.R
 
 class TripRecyclerViewAdapter(
     private var trips: MutableList<Trip>?,

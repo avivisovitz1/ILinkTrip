@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import java.util.UUID
 
 @Entity(
     tableName = "favorite_traveler", foreignKeys = [
@@ -27,7 +28,6 @@ data class FavoriteTraveler(
     @ColumnInfo(name = "favoriteUserId")
     val favoriteUserId: String
 ) {
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
-    val id: Long = 0
+    @PrimaryKey
+    var id: String = UUID.randomUUID().toString()
 }

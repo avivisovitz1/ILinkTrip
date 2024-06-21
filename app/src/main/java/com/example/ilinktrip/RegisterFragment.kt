@@ -1,13 +1,18 @@
 package com.example.ilinktrip
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.RadioButton
 import androidx.navigation.fragment.navArgs
+import com.example.ilinktrip.models.Model
+import com.example.ilinktrip.models.User
+import com.ilinktrip.R
 
 class RegisterFragment : Fragment() {
     private val args by navArgs<RegisterFragmentArgs>()
@@ -37,6 +42,7 @@ class RegisterFragment : Fragment() {
         val phoneNumberEt = view.findViewById<EditText>(R.id.register_phone_et)
         val passwordEt = view.findViewById<EditText>(R.id.register_password_et)
         val passwordConfEt = view.findViewById<EditText>(R.id.register_confirm_password_et)
+        val registerBtn = view.findViewById<Button>(R.id.register_btn)
 
         if (userDetails != null) {
             idEt.setText(userDetails!!.id)
@@ -51,6 +57,27 @@ class RegisterFragment : Fragment() {
             phoneNumberEt.setText(userDetails!!.phoneNumber)
             passwordEt.setText(userDetails!!.password)
             passwordConfEt.setText(userDetails!!.password)
+        }
+
+        registerBtn.setOnClickListener {
+            val gender = if (maleGenderRb.isChecked) "male" else "female"
+
+            val user = User(
+                idEt.text.toString(),
+                emailEt.text.toString(),
+                firstNameEt.text.toString(),
+                lastNameEt.text.toString(),
+                ageEt.text.toString().toInt(),
+                gender,
+                phoneNumberEt.text.toString(),
+                "",
+                passwordEt.text.toString()
+            )
+
+            Model.instance().addUser(user) {
+                val intent = Intent(this.context, MainActivity::class.java)
+                startActivity(intent)
+            }
         }
 
         return view

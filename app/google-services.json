@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "810509906876",
+    "project_id": "ilinktrip",
+    "storage_bucket": "ilinktrip.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:810509906876:android:9f9e473a08e9a52fa2f1b9",
+        "android_client_info": {
+          "package_name": "com.example.ilinktrip"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClFgZIMC7b9LPNK62MiURfshpS3ZHJOwY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

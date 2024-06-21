@@ -1,13 +1,12 @@
 package com.example.ilinktrip.modules.tripsFeed.adapter
 
 import android.view.View
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.ilinktrip.R
 import com.example.ilinktrip.interfaces.TripFeedItemClickListener
 import com.example.ilinktrip.models.Trip
+import com.ilinktrip.R
 
 class TripViewHolder(
     itemView: View,

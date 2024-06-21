@@ -14,6 +14,7 @@ import android.widget.Spinner
 import androidx.navigation.Navigation
 import com.example.ilinktrip.models.Model
 import com.example.ilinktrip.models.Trip
+import com.ilinktrip.R
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.Calendar

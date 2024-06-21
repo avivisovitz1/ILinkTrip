@@ -5,15 +5,16 @@ import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "user")
 data class User(
-   @PrimaryKey val id: String,
+    @PrimaryKey val id: String,
     val email: String,
     val firstName: String,
     val lastName: String,
     val age: Int,
     val gender: String,
     val phoneNumber: String,
+    val avatarUrl: String,
     val password: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
@@ -22,6 +23,7 @@ data class User(
         parcel.readString() ?: throw IllegalStateException("Error happened, do something"),
         parcel.readString() ?: throw IllegalStateException("Error happened, do something"),
         parcel.readInt() ?: throw IllegalStateException("Error happened, do something"),
+        parcel.readString() ?: throw IllegalStateException("Error happened, do something"),
         parcel.readString() ?: throw IllegalStateException("Error happened, do something"),
         parcel.readString() ?: throw IllegalStateException("Error happened, do something"),
         parcel.readString() ?: throw IllegalStateException("Error happened, do something")
@@ -36,6 +38,7 @@ data class User(
         parcel.writeInt(age)
         parcel.writeString(gender)
         parcel.writeString(phoneNumber)
+        parcel.writeString(avatarUrl)
         parcel.writeString(password)
     }
 

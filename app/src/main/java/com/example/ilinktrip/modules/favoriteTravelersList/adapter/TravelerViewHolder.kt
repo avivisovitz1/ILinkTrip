@@ -6,10 +6,9 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.ilinktrip.R
 import com.example.ilinktrip.interfaces.RemoveFavoriteTravelerClickListener
-import com.example.ilinktrip.models.Model
 import com.example.ilinktrip.models.User
+import com.ilinktrip.R
 
 class TravelerViewHolder(
     itemView: View,
@@ -26,7 +25,7 @@ class TravelerViewHolder(
         val markedFavoriteIb = itemView.findViewById<ImageButton>(R.id.mark_favorite_traveler_btn)
 
 //        linkTravelerBtn.setOnClickListener()
-
+//TODO: toggle between star icons and add/delete after setting current user
         markedFavoriteIb.setOnClickListener {
             // remove traveler for favorites in db
             markedFavoriteIb.setImageResource(R.drawable.check_star)

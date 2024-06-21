@@ -9,12 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
-import com.example.ilinktrip.R
-import com.example.ilinktrip.databinding.FragmentTripsFeedListBinding
 import com.example.ilinktrip.interfaces.TripFeedItemClickListener
 import com.example.ilinktrip.models.Model
 import com.example.ilinktrip.models.Trip
 import com.example.ilinktrip.modules.tripsFeed.adapter.TripRecyclerViewAdapter
+import com.ilinktrip.R
+import com.ilinktrip.databinding.FragmentTripsFeedListBinding
 
 
 class TripsFeedFragment : Fragment() {

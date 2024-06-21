@@ -5,16 +5,19 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import org.threeten.bp.LocalDate
+import java.util.UUID
 
 
-@Entity(foreignKeys = [
-    ForeignKey(
-        entity = User::class,
-        parentColumns = arrayOf("id"),
-        childColumns = arrayOf("userId"),
-        onDelete = ForeignKey.CASCADE,
-    ),
-])
+@Entity(
+    tableName = "trip", foreignKeys = [
+        ForeignKey(
+            entity = User::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("userId"),
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ]
+)
 data class Trip(
     val userId: String,
     val country: String,
@@ -23,6 +26,6 @@ data class Trip(
     val durationInWeeks: Int,
     val isDone: Boolean
 ) {
-    @PrimaryKey(autoGenerate = true)
-    var id: Long = 0
+    @PrimaryKey
+    var id: String = UUID.randomUUID().toString()
 }
