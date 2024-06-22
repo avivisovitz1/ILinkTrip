@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.ilinktrip.interfaces.TripFeedItemClickListener
 import com.example.ilinktrip.models.Model
 import com.example.ilinktrip.models.Trip
+import com.example.ilinktrip.models.TripWithUserDetails
 import com.example.ilinktrip.modules.tripsFeed.adapter.TripRecyclerViewAdapter
 import com.ilinktrip.R
 import com.ilinktrip.databinding.FragmentTripsFeedListBinding
@@ -19,7 +20,7 @@ import com.ilinktrip.databinding.FragmentTripsFeedListBinding
 
 class TripsFeedFragment : Fragment() {
     var tripsRecyclerView: RecyclerView? = null
-    var trips: MutableList<Trip>? = null
+    var tripsWithUsers: MutableList<TripWithUserDetails>? = null
     var listener: TripFeedItemClickListener? = null
     var adapter: TripRecyclerViewAdapter? = null
     var binding: FragmentTripsFeedListBinding? = null
@@ -47,28 +48,38 @@ class TripsFeedFragment : Fragment() {
 //        tripsRecyclerView?.setHasFixedSize(true)
 //        tripsRecyclerView?.layoutManager =
 
-        adapter = TripRecyclerViewAdapter(trips, listener)
+        adapter = TripRecyclerViewAdapter(tripsWithUsers, listener)
         tripsRecyclerView?.adapter = adapter
 
         adapter?.listener = object : TripFeedItemClickListener {
             override fun onTripClick(position: Int) {
-                val trip = trips?.get(position)
+                val tripWithUser = tripsWithUsers?.get(position)
 
-                if (trip != null) {
-                    Navigation.findNavController(view).navigate(
-                        TripsFeedFragmentDirections.actionTripsFeedFragmentToTripDetailsFragment(
-//                                TODO: replace with userName
-                            "shilshul",
-                            trip.country,
-                            trip.place,
-                            trip.startsAt.toString(),
-                            trip.durationInWeeks
-                        )
-                    )
+                if (tripWithUser != null) {
+                    Model.instance()
+                        .getCurrentUser { user ->
+                            if (user != null) {
+                                Model.instance().getUserFavoriteTravelers(user.id) { favoritesIds ->
+                                    Navigation.findNavController(view).navigate(
+                                        TripsFeedFragmentDirections.actionTripsFeedFragmentToTripDetailsFragment(
+                                            tripWithUser.userDetails,
+                                            tripWithUser.trip.country,
+                                            tripWithUser.trip.place,
+                                            tripWithUser.trip.startsAt.toString(),
+                                            tripWithUser.trip.durationInWeeks,
+                                            favoritesIds.contains(tripWithUser.userDetails.id)
+                                        )
+                                    )
+                                }
+                            } else {
+//                                todo: log
+                            }
+                        }
                 }
             }
 
         }
+
         return view
     }
 
@@ -77,7 +88,7 @@ class TripsFeedFragment : Fragment() {
 
         Model.instance().getAllTrips { trips ->
             val tripsList = trips.toMutableList()
-            this.trips = tripsList
+            this.tripsWithUsers = tripsList
             adapter?.setData(tripsList)
             binding!!.tripsFeedProgressBar.visibility = View.GONE
         }

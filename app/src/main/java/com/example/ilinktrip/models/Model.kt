@@ -3,11 +3,13 @@ package com.example.ilinktrip.models
 import android.os.Looper
 import androidx.core.os.HandlerCompat
 import com.example.ilinktrip.dao.AppLocalDatabase
+import com.example.ilinktrip.services.AuthService
 import java.util.concurrent.Executors
 
 class Model private constructor() {
     private val database = AppLocalDatabase.db
     private val firebaseModel = FirebaseModel()
+    private val authenticationService = AuthService()
     private var executor = Executors.newSingleThreadExecutor()
     private var mainHandler = HandlerCompat.createAsync(Looper.getMainLooper())
 
@@ -19,8 +21,44 @@ class Model private constructor() {
         }
     }
 
-    fun getAllUsers(callback: (List<User>) -> Unit) {
-        firebaseModel.getAllUsers(callback)
+    fun getCurrentUser(callback: (user: User?) -> Unit) {
+        authenticationService.getCurrentUser() {
+            if (it != null) {
+                firebaseModel.getUserDataByEmail(it.email!!, callback)
+            } else {
+                callback(null)
+            }
+        }
+    }
+
+    fun signIn(email: String, password: String, callback: (user: User?) -> Unit) {
+        authenticationService.signIn(email, password) {
+            if (it != null) {
+                firebaseModel.getUserDataByEmail(it.email!!, callback)
+            } else {
+                callback(null)
+            }
+        }
+
+    }
+
+    fun signUp(userData: User, callback: (isSuccessful: Boolean) -> Unit) {
+        authenticationService.signUp(userData.email, userData.password) {
+            if (it != null) {
+                firebaseModel.upsertUser(userData, callback)
+            } else {
+                callback(false)
+            }
+        }
+    }
+
+    fun signOut() {
+        authenticationService.signOut()
+    }
+
+
+    fun getAllUsers(callback: (MutableMap<String, User>) -> Unit) {
+        firebaseModel.getUsers(listOf(), callback)
 //        executor.execute {
 //            val users = database.userDao().getAll()
 //
@@ -31,11 +69,15 @@ class Model private constructor() {
 //        }
     }
 
-    fun addUser(user: User, callback: () -> Unit) {
-        firebaseModel.addUser(user, callback)
+//    fun addUserDetails(user: User, callback: () -> Unit) {
+//        firebaseModel.upsertUser(user, callback)
+//    }
+
+    fun updateUserDetails(user: User, callback: (isSuccessful: Boolean) -> Unit) {
+        firebaseModel.upsertUser(user, callback)
     }
 
-    fun getAllTrips(callback: (List<Trip>) -> Unit) {
+    fun getAllTrips(callback: (List<TripWithUserDetails>) -> Unit) {
         firebaseModel.getAllTrips(callback)
 //        executor.execute {
 //            val trips = database.tripDao().getAll()
@@ -96,6 +138,4 @@ class Model private constructor() {
             }
         }
     }
-
-
 }

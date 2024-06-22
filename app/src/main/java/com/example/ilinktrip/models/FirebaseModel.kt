@@ -24,37 +24,71 @@ class FirebaseModel {
         db.firestoreSettings = settings
     }
 
-    fun getAllUsers(callback: (List<User>) -> Unit) {
-        db.collection(USERS_COLLECTION).get().addOnCompleteListener {
+    fun getUserDataByEmail(email: String, callback: (user: User?) -> Unit) {
+        db.collection(USERS_COLLECTION).whereEqualTo("email", email).get().addOnCompleteListener {
             when (it.isSuccessful) {
                 true -> {
-                    val users: MutableList<User> = mutableListOf()
-                    for (userRes in it.result) {
-                        val id = userRes.getString("id") ?: ""
-                        val email = userRes.getString("email") ?: ""
-                        val firstName = userRes.getString("firstName") ?: ""
-                        val lastName = userRes.getString("lastName") ?: ""
-                        val age = userRes.getLong("age")?.toInt() ?: 0
-                        val gender = userRes.getString("gender") ?: ""
-                        val phoneNumber = userRes.getString("phoneNumber") ?: ""
-                        val avatarUrl = userRes.getString("avatarUrl") ?: ""
-                        val password = userRes.getString("password") ?: ""
-                        val user = User(
-                            id, email, firstName, lastName, age, gender,
-                            phoneNumber, avatarUrl, password
-                        )
+                    val userRes = it.result.documents[0]
+                    val id = userRes.getString("id") ?: ""
+                    val email = userRes.getString("email") ?: ""
+                    val firstName = userRes.getString("firstName") ?: ""
+                    val lastName = userRes.getString("lastName") ?: ""
+                    val age = userRes.getLong("age")?.toInt() ?: 0
+                    val gender = userRes.getString("gender") ?: ""
+                    val phoneNumber = userRes.getString("phoneNumber") ?: ""
+                    val avatarUrl = userRes.getString("avatarUrl") ?: ""
+                    val password = userRes.getString("password") ?: ""
+                    val user = User(
+                        id, email, firstName, lastName, age, gender,
+                        phoneNumber, avatarUrl, password
+                    )
 
-                        users.add(user)
-                    }
-                    callback(users)
+                    callback(user)
                 }
 
-                false -> callback(mutableListOf())
+                false -> callback(null)
             }
         }
     }
 
-    fun addUser(user: User, callback: () -> Unit) {
+    fun getUsers(usersIds: List<String>, callback: (MutableMap<String, User>) -> Unit) {
+        val getUsersQuery = if (usersIds.isEmpty()) {
+            db.collection(USERS_COLLECTION)
+        } else {
+            db.collection(USERS_COLLECTION).whereIn("id", usersIds)
+        }
+
+        getUsersQuery.get()
+            .addOnCompleteListener {
+                when (it.isSuccessful) {
+                    true -> {
+                        val users: MutableMap<String, User> = mutableMapOf()
+                        for (userRes in it.result) {
+                            val id = userRes.getString("id") ?: ""
+                            val email = userRes.getString("email") ?: ""
+                            val firstName = userRes.getString("firstName") ?: ""
+                            val lastName = userRes.getString("lastName") ?: ""
+                            val age = userRes.getLong("age")?.toInt() ?: 0
+                            val gender = userRes.getString("gender") ?: ""
+                            val phoneNumber = userRes.getString("phoneNumber") ?: ""
+                            val avatarUrl = userRes.getString("avatarUrl") ?: ""
+                            val password = userRes.getString("password") ?: ""
+                            val user = User(
+                                id, email, firstName, lastName, age, gender,
+                                phoneNumber, avatarUrl, password
+                            )
+
+                            users[id] = user
+                        }
+                        callback(users)
+                    }
+
+                    false -> callback(mutableMapOf())
+                }
+            }
+    }
+
+    fun upsertUser(user: User, callback: (isSuccessful: Boolean) -> Unit) {
         val userDto = hashMapOf(
             "id" to user.id,
             "email" to user.email,
@@ -68,15 +102,18 @@ class FirebaseModel {
         )
 
         db.collection(USERS_COLLECTION).document(user.id).set(userDto).addOnSuccessListener {
-            callback()
+            callback(true)
+        }.addOnFailureListener {
+            callback(false)
         }
     }
 
-    fun getAllTrips(callback: (List<Trip>) -> Unit) {
+    fun getAllTrips(callback: (List<TripWithUserDetails>) -> Unit) {
         db.collection(TRIPS_COLLECTION).get().addOnCompleteListener {
             when (it.isSuccessful) {
                 true -> {
                     val trips: MutableList<Trip> = mutableListOf()
+                    val usersIds: MutableList<String> = mutableListOf()
                     for (tripRes in it.result) {
                         val userId = tripRes.getString("userId") ?: ""
                         val country = tripRes.getString("country") ?: ""
@@ -95,9 +132,17 @@ class FirebaseModel {
                             isDone
                         )
 
+                        usersIds.add(userId)
                         trips.add(trip)
                     }
-                    callback(trips)
+
+                    this.getUsers(usersIds.distinct()) {
+                        val tripsWithUsers = trips.mapNotNull { trip ->
+                            val user = it[trip.userId]
+                            user?.let { TripWithUserDetails(trip, user) }
+                        }
+                        callback(tripsWithUsers)
+                    }
                 }
 
                 false -> callback(mutableListOf())

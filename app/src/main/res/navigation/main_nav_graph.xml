@@ -24,10 +24,6 @@
         android:label="Trip Details"
         tools:layout="@layout/fragment_trip_details">
         <argument
-            android:name="userName"
-            android:defaultValue="&quot;&quot;"
-            app:argType="string" />
-        <argument
             android:name="country"
             android:defaultValue='""'
             app:argType="string" />
@@ -43,6 +39,13 @@
             android:name="duration"
             android:defaultValue="0"
             app:argType="integer" />
+        <argument
+            android:name="userDetails"
+            app:argType="com.example.ilinktrip.models.User" />
+        <argument
+            android:name="isFavorite"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/addTripFragment"

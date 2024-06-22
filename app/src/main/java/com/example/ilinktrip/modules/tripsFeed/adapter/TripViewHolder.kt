@@ -6,6 +6,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ilinktrip.interfaces.TripFeedItemClickListener
 import com.example.ilinktrip.models.Trip
+import com.example.ilinktrip.models.TripWithUserDetails
 import com.ilinktrip.R
 
 class TripViewHolder(
@@ -13,26 +14,29 @@ class TripViewHolder(
     listener: TripFeedItemClickListener?,
 ) :
     RecyclerView.ViewHolder(itemView) {
-    var trip: Trip? = null
-    var userNameTv: TextView? = null
-    var countryPlaceTv: TextView? = null
-    var userProfileIb: ImageView? = null
+    private var tripWithUser: TripWithUserDetails? = null
+    private var userNameTv: TextView? = null
+    private var countryPlaceTv: TextView? = null
+    private var userProfileIv: ImageView? = null
 
     init {
         userNameTv = itemView.findViewById(R.id.trip_user_name_tv)
         countryPlaceTv = itemView.findViewById(R.id.trip_country_place_tv)
-        userProfileIb = itemView.findViewById(R.id.trip_user_profile_iv)
+        userProfileIv = itemView.findViewById(R.id.trip_user_profile_iv)
 
         itemView.setOnClickListener {
             listener?.onTripClick(adapterPosition)
         }
     }
 
-    fun bind(trip: Trip?) {
-        this.trip = trip
-        this.userNameTv?.text = "Shilshul"
-        //TODO: this.userNameTv?.text = trip?.userName
-        this.userProfileIb?.setImageResource(R.drawable.girl_avatar)
-        this.countryPlaceTv?.text = trip?.country + ", " + trip?.place
+    fun bind(tripWithUser: TripWithUserDetails?) {
+        this.tripWithUser = tripWithUser
+        this.userNameTv?.text =
+            tripWithUser?.userDetails?.firstName + " " + tripWithUser?.userDetails?.lastName
+
+        val avatar =
+            if (tripWithUser?.userDetails?.gender === "male") R.drawable.guy_avatar else R.drawable.girl_avatar
+        this.userProfileIv?.setImageResource(avatar)
+        this.countryPlaceTv?.text = tripWithUser?.trip?.country + ", " + tripWithUser?.trip?.place
     }
 }

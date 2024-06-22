@@ -8,7 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.RadioButton
+import android.widget.Toast
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import com.example.ilinktrip.models.Model
 import com.example.ilinktrip.models.User
@@ -43,6 +46,7 @@ class RegisterFragment : Fragment() {
         val passwordEt = view.findViewById<EditText>(R.id.register_password_et)
         val passwordConfEt = view.findViewById<EditText>(R.id.register_confirm_password_et)
         val registerBtn = view.findViewById<Button>(R.id.register_btn)
+        val progressBar = view.findViewById<ProgressBar>(R.id.register_progress_bar)
 
         if (userDetails != null) {
             idEt.setText(userDetails!!.id)
@@ -74,10 +78,31 @@ class RegisterFragment : Fragment() {
                 passwordEt.text.toString()
             )
 
-            Model.instance().addUser(user) {
-                val intent = Intent(this.context, MainActivity::class.java)
-                startActivity(intent)
+            progressBar.visibility = View.VISIBLE
+
+            if (userDetails == null) {
+                Model.instance().signUp(user) { isSuccessful ->
+                    progressBar.visibility = View.GONE
+                    if (isSuccessful) {
+
+                        val intent = Intent(this.context, MainActivity::class.java)
+                        startActivity(intent)
+                    } else {
+                        Toast.makeText(
+                            this.context,
+                            "error while trying to sign up",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+
+                }
+            } else {
+                Model.instance().updateUserDetails(user) {
+                    progressBar.visibility = View.GONE
+                    Navigation.findNavController(view).popBackStack()
+                }
             }
+
         }
 
         return view

@@ -38,12 +38,14 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/register_main_fragment"
-        android:name="com.example.ilinktrip.LandingPageFragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:defaultNavHost="true"
         app:layout_constraintBottom_toBottomOf="@+id/register_page_body"
         app:layout_constraintEnd_toEndOf="@+id/register_page_body"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/register_app_logo" />
+        app:layout_constraintTop_toBottomOf="@+id/register_app_logo"
+        app:navGraph="@navigation/intro_nav_graph" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
