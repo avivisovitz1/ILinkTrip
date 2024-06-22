@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.navigation.Navigation
 import com.example.ilinktrip.models.Model
 import com.example.ilinktrip.models.Trip
@@ -67,10 +68,19 @@ class AddTripFragment : Fragment() {
             val place = placeEt.text.toString()
             val startsAt = LocalDate.parse(startsAtEt?.text.toString(), formatter)
             val duration = durationEt.text.toString().toInt()
-            val trip = Trip("323100347", country, place, startsAt, duration, false)
 
-            Model.instance().addTrip(trip) {
-                Navigation.findNavController(view).popBackStack()
+            Model.instance().getCurrentUser { user ->
+                if (user != null) {
+                    val trip = Trip(user.id, country, place, startsAt, duration, false)
+
+                    Model.instance().addTrip(trip) {
+                        Navigation.findNavController(view).popBackStack()
+                    }
+                } else {
+                    Toast.makeText(this.context, "error saving trip details", Toast.LENGTH_SHORT)
+                        .show()
+//                    todo: raise error
+                }
             }
         }
 

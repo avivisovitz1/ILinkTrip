@@ -25,17 +25,16 @@ class TravelerViewHolder(
         val markedFavoriteIb = itemView.findViewById<ImageButton>(R.id.mark_favorite_traveler_btn)
 
 //        linkTravelerBtn.setOnClickListener()
-//TODO: toggle between star icons and add/delete after setting current user
         markedFavoriteIb.setOnClickListener {
             // remove traveler for favorites in db
             markedFavoriteIb.setImageResource(R.drawable.check_star)
-            user?.let { it1 -> listener?.onRemoveFavoriteClick(it1) }
+            user?.let { it1 -> listener?.onRemoveFavoriteClick(it1, adapterPosition) }
         }
     }
 
     fun bind(user: User?) {
         this.user = user
         this.userNameTv?.text = user?.firstName + " " + user?.lastName
-        this.userProfileIV?.setImageResource(R.drawable.girl_avatar)
+        this.userProfileIV?.setImageResource(if (user?.gender == "male") R.drawable.guy_avatar else R.drawable.girl_avatar)
     }
 }

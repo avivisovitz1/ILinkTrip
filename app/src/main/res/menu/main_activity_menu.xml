@@ -6,4 +6,8 @@
         android:icon="@drawable/profile_tab"
         android:title="@string/profile_tab"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/logoutBtn"
+        android:title="@string/logout_btn"
+        app:showAsAction="collapseActionView" />
 </menu>

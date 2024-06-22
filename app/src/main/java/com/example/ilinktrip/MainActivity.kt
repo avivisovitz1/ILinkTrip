@@ -1,5 +1,6 @@
 package com.example.ilinktrip
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -8,6 +9,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.example.ilinktrip.models.Model
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ilinktrip.R
 
@@ -41,6 +43,10 @@ class MainActivity : AppCompatActivity() {
                 navControler!!.popBackStack()
             } else if (item.itemId == R.id.profileFragment) {
                 navControler!!.navigate(R.id.action_global_profileFragment)
+            } else if (item.itemId === R.id.logoutBtn) {
+                Model.instance().signOut()
+                val intent = Intent(parent, RegisterActivity::class.java)
+                startActivity(intent)
             }
         }
 

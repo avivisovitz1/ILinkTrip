@@ -3,6 +3,8 @@
     <string name="app_name">ILinkTrip</string>
     <string name="welcome">Welcome \n to the ILink Trip</string>
     <string name="intro">meet and connect with other Israeli travelers all over the world</string>
+    <string name="already_singed">already has user?</string>
+    <string name="sign_in">Sign In</string>
 
     <!-- Register fragment-->
     <string name="id">ID</string>
@@ -17,6 +19,10 @@
     <string name="password">Password</string>
     <string name="confirm_password">Again</string>
     <string name="register_btn">Submit</string>
+
+    <!-- Login Fragment -->
+    <string name="login_btn">Login</string>
+    <string name="logout_btn">Log Out</string>
 
     <!-- User -->
     <string name="user_name">User Name</string>

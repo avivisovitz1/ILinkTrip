@@ -6,16 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.navigation.Navigation
+import com.example.ilinktrip.modules.profile.ProfileFragmentDirections
 import com.ilinktrip.R
 
 class LandingPageFragment : Fragment() {
-
-    interface OnGetStartedClickListener {
-        fun onGetStartedClick()
-    }
-
-    private var listener: OnGetStartedClickListener? = null
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -23,16 +18,24 @@ class LandingPageFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_landing_page, container, false)
         val getStartedBtn = view.findViewById<Button>(R.id.get_started_btn)
+        val signInBtn = view.findViewById<Button>(R.id.sign_in_btn)
 
         getStartedBtn.setOnClickListener {
-            listener?.onGetStartedClick()
+            Navigation.findNavController(view)
+                .navigate(
+                    LandingPageFragmentDirections.actionLandingPageFragmentToRegisterFragment()
+                )
+//            listener?.onGetStartedClick()
+        }
+
+        signInBtn.setOnClickListener {
+            Navigation.findNavController(view)
+                .navigate(
+                    LandingPageFragmentDirections.actionLandingPageFragmentToLoginFragment()
+                )
         }
 
         return view
-    }
-
-    fun setOnGetStartedClickListener(listener: OnGetStartedClickListener) {
-        this.listener = listener
     }
 
     companion object {

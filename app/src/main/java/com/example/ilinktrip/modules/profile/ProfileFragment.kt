@@ -6,17 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.Navigation
+import com.example.ilinktrip.models.Model
 import com.example.ilinktrip.models.User
 import com.ilinktrip.R
 
 class ProfileFragment : Fragment() {
-    private val user: User = User(
-        "323100347", "avivisovitz@gmail.com", "Aviv", "Isovitz",
-        22, "male", "0528293085", "", "Aviv1234"
-    )
-//TODO:    val user: User = Model.instance().getUser()
+    private var user: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,18 +27,34 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
-        val usernameTv = view.findViewById<TextView>(R.id.profile_username_tv)
-        val emailTv = view.findViewById<TextView>(R.id.profile_email_tv)
+
+        Model.instance().getCurrentUser {
+            if (it != null) {
+                user = it
+                val usernameTv = view.findViewById<TextView>(R.id.profile_username_tv)
+                val emailTv = view.findViewById<TextView>(R.id.profile_email_tv)
+                val profileIv = view.findViewById<ImageView>(R.id.profile_iv)
+                usernameTv.text = it.firstName + " " + it.lastName
+                emailTv.text = it.email
+                val avatar =
+                    if (user!!.gender == "male") R.drawable.guy_avatar else R.drawable.girl_avatar
+                profileIv.setImageResource(avatar)
+            } else {
+//                raise error
+            }
+        }
+
         val myTripsBtn = view.findViewById<Button>(R.id.profile_my_trips_btn)
         val myFavoritesBtn = view.findViewById<Button>(R.id.profile_my_favorites_btn)
         val editProfileBtn = view.findViewById<Button>(R.id.profile_edit_btn)
 
-        usernameTv.text = user.firstName + " " + user.lastName
-        emailTv.text = user.email
-
         myTripsBtn.setOnClickListener {
             Navigation.findNavController(view)
-                .navigate(ProfileFragmentDirections.actionProfileFragmentToTripsFeedFragment(true))
+                .navigate(
+                    ProfileFragmentDirections.actionProfileFragmentToTripsFeedFragment(
+                        true
+                    )
+                )
         }
 
         myFavoritesBtn.setOnClickListener {
@@ -48,14 +62,13 @@ class ProfileFragment : Fragment() {
                 .navigate(ProfileFragmentDirections.actionProfileFragmentToFavoriteTravelersListFragment())
         }
 
-//TODO: return this code when can access user
-//        editProfileBtn.setOnClickListener {
-//            Navigation.findNavController(view).navigate(
-//                ProfileFragmentDirections.actionProfileFragmentToRegisterFragment(
-//                    Model.instance().getUser()
-//                )
-//            )
-//        }
+        editProfileBtn.setOnClickListener {
+            Navigation.findNavController(view).navigate(
+                ProfileFragmentDirections.actionProfileFragmentToRegisterFragment(
+                    user
+                )
+            )
+        }
 
         return view
     }

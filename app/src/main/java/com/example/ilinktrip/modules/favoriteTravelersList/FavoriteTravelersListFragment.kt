@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.ilinktrip.models.FavoriteTraveler
 import com.example.ilinktrip.models.Model
 import com.example.ilinktrip.models.User
@@ -44,11 +45,21 @@ class FavoriteTravelersListFragment : Fragment() {
     fun loadFavoriteTravelers() {
         binding!!.favoriteTravelerListProgressBar.visibility = View.VISIBLE
 
-        Model.instance().getUserFavoriteTravelers("323100347") { travelersIds ->
-            val travelersIdsList = travelersIds.toMutableList()
-            this.travelersIds = travelersIdsList
-            adapter?.setData(travelersIdsList)
-            binding!!.favoriteTravelerListProgressBar.visibility = View.GONE
+        Model.instance().getCurrentUser { user ->
+            if (user != null) {
+                Model.instance().getUserFavoriteTravelers(user.id) { favoritesIds ->
+                    val travelersIdsList = favoritesIds.toMutableList()
+                    this.travelersIds = travelersIdsList
+                    adapter?.setData(travelersIdsList)
+                    binding!!.favoriteTravelerListProgressBar.visibility = View.GONE
+                }
+            } else {
+                Toast.makeText(
+                    this.context,
+                    "error getting your favorite travelers",
+                    Toast.LENGTH_SHORT
+                )
+            }
         }
     }
 
