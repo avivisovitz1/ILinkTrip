@@ -12,24 +12,18 @@ import android.widget.Toast
 import androidx.navigation.fragment.navArgs
 import com.example.ilinktrip.models.Model
 import com.ilinktrip.R
+import com.ilinktrip.databinding.FragmentTripDetailsBinding
+import com.squareup.picasso.Picasso
 
 
 class TripDetailsFragment : Fragment() {
     private val args by navArgs<TripDetailsFragmentArgs>()
+    private var binding: FragmentTripDetailsBinding? = null
     private val userDetails by lazy {
         args.userDetails
     }
-    val country by lazy {
-        args.country
-    }
-    val place by lazy {
-        args.place
-    }
-    private val startsAt by lazy {
-        args.startsAt
-    }
-    private val duration by lazy {
-        args.duration
+    private val trip by lazy {
+        args.trip
     }
     private val isFavorite by lazy {
         args.isFavorite
@@ -44,7 +38,8 @@ class TripDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_trip_details, container, false)
+        binding = FragmentTripDetailsBinding.inflate(inflater, container, false)
+        val view = binding!!.root;
         val userNameTv = view.findViewById<TextView>(R.id.trip_user_name_tv)
         val countryPlaceTv = view.findViewById<TextView>(R.id.trip_place_tv)
 //        val userProfileImg = view.findViewById<ImageView>(R.id.trip_user_profile_iv)
@@ -55,10 +50,18 @@ class TripDetailsFragment : Fragment() {
         val markFavoriteTraveler = view.findViewById<ImageButton>(R.id.trip_mark_favorite_traveler)
 
         userNameTv.text = userDetails.firstName + " " + userDetails.lastName
-        countryPlaceTv.text = country + ", " + place
-        startsAtTv.text = startsAt
-        durationTv.text = duration.toString() + " Weeks"
+        countryPlaceTv.text = trip.country + ", " + trip.place
+        startsAtTv.text = trip.startsAt.toString()
+        durationTv.text = trip.durationInWeeks.toString() + " Weeks"
         phoneNumberTv.text = userDetails.phoneNumber
+
+        if (trip.avatarUrl != "") {
+            Picasso.get()
+                .load(trip.avatarUrl).placeholder(R.drawable.no_trip)
+                .resize(260, 120)
+                .centerInside()
+                .into(binding!!.tripPhotoIv)
+        }
 
         markFavoriteTraveler.setImageResource(if (isFavorite) R.drawable.star else R.drawable.check_star)
         markFavoriteTraveler.setOnClickListener {

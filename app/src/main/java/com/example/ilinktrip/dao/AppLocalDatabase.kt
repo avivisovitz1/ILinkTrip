@@ -10,7 +10,7 @@ import com.example.ilinktrip.models.LocalDateTypeConverter
 import com.example.ilinktrip.models.Trip
 import com.example.ilinktrip.models.User
 
-@Database(entities = [User::class, Trip::class, FavoriteTraveler::class], version = 3)
+@Database(entities = [User::class, Trip::class, FavoriteTraveler::class], version = 4)
 @TypeConverters(LocalDateTypeConverter::class)
 abstract class AppLocalDbRepository : RoomDatabase() {
     abstract fun userDao(): UserDao

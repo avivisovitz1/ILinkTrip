@@ -1,15 +1,18 @@
 package com.example.ilinktrip.models
 
+import android.graphics.Bitmap
 import android.os.Looper
 import androidx.core.os.HandlerCompat
 import com.example.ilinktrip.dao.AppLocalDatabase
 import com.example.ilinktrip.services.AuthService
+import com.example.ilinktrip.services.FirebaseStorageService
 import java.util.concurrent.Executors
 
 class Model private constructor() {
     private val database = AppLocalDatabase.db
     private val firebaseModel = FirebaseModel()
     private val authenticationService = AuthService()
+    private val storageService = FirebaseStorageService()
     private var executor = Executors.newSingleThreadExecutor()
     private var mainHandler = HandlerCompat.createAsync(Looper.getMainLooper())
 
@@ -45,7 +48,8 @@ class Model private constructor() {
     fun signUp(userData: User, callback: (isSuccessful: Boolean) -> Unit) {
         authenticationService.signUp(userData.email, userData.password) {
             if (it != null) {
-                firebaseModel.upsertUser(userData, callback)
+                callback(true)
+//                firebaseModel.upsertUser(userData, callback)
             } else {
                 callback(false)
             }
@@ -69,9 +73,9 @@ class Model private constructor() {
 //        }
     }
 
-//    fun addUserDetails(user: User, callback: () -> Unit) {
-//        firebaseModel.upsertUser(user, callback)
-//    }
+    fun addUserDetails(user: User, callback: (Boolean) -> Unit) {
+        firebaseModel.upsertUser(user, callback)
+    }
 
     fun updateUserDetails(user: User, callback: (isSuccessful: Boolean) -> Unit) {
         firebaseModel.upsertUser(user, callback)
@@ -94,7 +98,7 @@ class Model private constructor() {
 //        }
     }
 
-    fun addTrip(trip: Trip, callback: () -> Unit) {
+    fun upsertTrip(trip: Trip, callback: () -> Unit) {
         firebaseModel.addTrip(trip, callback)
 //        executor.execute {
 //            database.tripDao().insertAll(trip)
@@ -109,6 +113,10 @@ class Model private constructor() {
 //                callback()
 //            }
 //        }
+    }
+
+    fun deleteTrip(trip: Trip, callback: (Boolean) -> Unit) {
+        firebaseModel.deleteTrip(trip, callback)
     }
 
     fun addFavoriteTraveler(userId: String, favoriteTravelerId: String, callback: () -> Unit) {
@@ -137,5 +145,30 @@ class Model private constructor() {
                 callback()
             }
         }
+    }
+
+    fun uploadProfileImage(name: String, bitmap: Bitmap, callback: (url: String?) -> Unit) {
+        this.uploadImage(name, "profile_photos", bitmap, callback)
+    }
+
+    fun uploadTripImage(name: String, bitmap: Bitmap, callback: (url: String?) -> Unit) {
+        this.uploadImage(name, "trip_photos", bitmap, callback)
+    }
+
+    private fun uploadImage(
+        name: String,
+        folderName: String,
+        bitmap: Bitmap,
+        callback: (url: String?) -> Unit
+    ) {
+        storageService.uploadImage(name, folderName, bitmap, { url ->
+            if (url != null) {
+                callback(url)
+            } else {
+                callback(null)
+            }
+        }, {
+            callback(null)
+        })
     }
 }

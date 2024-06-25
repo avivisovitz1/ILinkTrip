@@ -14,7 +14,7 @@ data class User(
     val age: Int,
     val gender: String,
     val phoneNumber: String,
-    val avatarUrl: String,
+    var avatarUrl: String,
     val password: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(

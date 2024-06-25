@@ -108,6 +108,16 @@ class FirebaseModel {
         }
     }
 
+    fun deleteTrip(trip: Trip, callback: (Boolean) -> Unit) {
+        db.collection(TRIPS_COLLECTION).document(trip.id).delete().addOnCompleteListener {
+            if(it.isSuccessful) {
+                callback(true)
+            } else {
+                callback(false)
+            }
+        }
+    }
+
     fun getAllTrips(callback: (List<TripWithUserDetails>) -> Unit) {
         db.collection(TRIPS_COLLECTION).get().addOnCompleteListener {
             when (it.isSuccessful) {
@@ -115,20 +125,24 @@ class FirebaseModel {
                     val trips: MutableList<Trip> = mutableListOf()
                     val usersIds: MutableList<String> = mutableListOf()
                     for (tripRes in it.result) {
+                        val id = tripRes.id ?: ""
                         val userId = tripRes.getString("userId") ?: ""
                         val country = tripRes.getString("country") ?: ""
                         val place = tripRes.getString("place") ?: ""
                         val startsAt = tripRes.getString("startsAt") ?: ""
                         val durationInWeeks = tripRes.getLong("durationInWeeks")?.toInt() ?: 0
+                        val avatarUrl = tripRes.getString("avatarUrl") ?: ""
                         val isDone = tripRes.getBoolean("isDone") ?: false
 
 
                         val trip = Trip(
+                            id,
                             userId,
                             country,
                             place,
                             LocalDateTypeConverter().dateToLocalDate(startsAt) ?: LocalDate.now(),
                             durationInWeeks,
+                            avatarUrl,
                             isDone
                         )
 
@@ -159,6 +173,7 @@ class FirebaseModel {
             "place" to trip.place,
             "startsAt" to startsAtDate,
             "durationInWeeks" to trip.durationInWeeks,
+            "avatarUrl" to trip.avatarUrl,
             "isDone" to trip.isDone
         )
 
