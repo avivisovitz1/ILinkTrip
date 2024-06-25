@@ -12,6 +12,7 @@ import androidx.navigation.Navigation
 import com.example.ilinktrip.models.Model
 import com.example.ilinktrip.models.User
 import com.ilinktrip.R
+import com.squareup.picasso.Picasso
 
 class ProfileFragment : Fragment() {
     private var user: User? = null
@@ -36,9 +37,16 @@ class ProfileFragment : Fragment() {
                 val profileIv = view.findViewById<ImageView>(R.id.profile_iv)
                 usernameTv.text = it.firstName + " " + it.lastName
                 emailTv.text = it.email
+
                 val avatar =
                     if (user!!.gender == "male") R.drawable.guy_avatar else R.drawable.girl_avatar
-                profileIv.setImageResource(avatar)
+
+                if (user!!.avatarUrl != "") {
+                    Picasso.get().load(user!!.avatarUrl).resize(160, 160).placeholder(avatar)
+                        .into(profileIv)
+                } else {
+                    profileIv.setImageResource(avatar)
+                }
             } else {
 //                raise error
             }

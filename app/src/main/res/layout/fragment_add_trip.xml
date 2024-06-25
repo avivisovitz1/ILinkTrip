@@ -2,128 +2,175 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/add_trip_fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/add_trip_country_tv"
-        android:layout_width="100dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="44dp"
-        android:text="Country"
-        android:textColor="@color/info"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Spinner
-        android:id="@+id/add_trip_country_spinner"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:backgroundTint="@color/info"
-        app:layout_constraintBaseline_toBaselineOf="@+id/add_trip_country_tv"
+    <ScrollView
+        android:id="@+id/add_trip_sv"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/add_trip_country_tv" />
-
-    <TextView
-        android:id="@+id/add_trip_place_tv"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="60dp"
-        android:text="Place"
-        android:textColor="@color/info"
-        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_trip_country_tv" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/add_trip_starts_at_tv"
-        android:layout_width="100dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="60dp"
-        android:text="Starts At"
-        android:textColor="@color/info"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_trip_place_tv" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/add_trip_fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/add_trip_starts_at_et"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:backgroundTint="@color/info"
-        android:ems="10"
-        android:focusableInTouchMode="false"
-        android:hint="@string/starts_at"
-        android:inputType="text"
-        android:textColor="@color/info"
-        app:layout_constraintBaseline_toBaselineOf="@+id/add_trip_starts_at_tv"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/add_trip_starts_at_tv" />
+            <TextView
+                android:id="@+id/add_trip_country_tv"
+                android:layout_width="100dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="44dp"
+                android:text="Country"
+                android:textColor="@color/info"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/add_trip_duration_tv"
-        android:layout_width="100dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="60dp"
-        android:text="Duration"
-        android:textColor="@color/info"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_trip_starts_at_tv" />
+            <Spinner
+                android:id="@+id/add_trip_country_spinner"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@color/info"
+                app:layout_constraintBaseline_toBaselineOf="@+id/add_trip_country_tv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/add_trip_country_tv" />
 
-    <EditText
-        android:id="@+id/add_trip_duration_et"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:backgroundTint="@color/info"
-        android:ems="10"
-        android:hint="@string/duration"
-        android:inputType="number"
-        android:textColor="@color/info"
-        app:layout_constraintBaseline_toBaselineOf="@+id/add_trip_duration_tv"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/add_trip_duration_tv" />
+            <TextView
+                android:id="@+id/add_trip_place_tv"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="60dp"
+                android:text="Place"
+                android:textColor="@color/info"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/add_trip_country_tv" />
+
+            <TextView
+                android:id="@+id/add_trip_starts_at_tv"
+                android:layout_width="100dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="60dp"
+                android:text="Starts At"
+                android:textColor="@color/info"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/add_trip_place_tv" />
+
+            <EditText
+                android:id="@+id/add_trip_starts_at_et"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@color/info"
+                android:ems="10"
+                android:focusableInTouchMode="false"
+                android:hint="@string/starts_at"
+                android:inputType="text"
+                android:textColor="@color/info"
+                app:layout_constraintBaseline_toBaselineOf="@+id/add_trip_starts_at_tv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/add_trip_starts_at_tv" />
+
+            <TextView
+                android:id="@+id/add_trip_duration_tv"
+                android:layout_width="100dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="60dp"
+                android:text="Duration"
+                android:textColor="@color/info"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/add_trip_starts_at_tv" />
+
+            <EditText
+                android:id="@+id/add_trip_duration_et"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@color/info"
+                android:ems="10"
+                android:hint="@string/duration"
+                android:inputType="number"
+                android:textColor="@color/info"
+                app:layout_constraintBaseline_toBaselineOf="@+id/add_trip_duration_tv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/add_trip_duration_tv" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/add_trip_place_input_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintBaseline_toBaselineOf="@+id/add_trip_place_tv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/add_trip_place_tv">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/add_trip_place_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/info"
+                    android:hint="Place" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/trip_select_photo_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="60dp"
+                android:text="@string/select_trip_photos"
+                android:textColor="@color/info"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/add_trip_duration_tv" />
+
+            <ImageButton
+                android:id="@+id/trip_photo_ib"
+                android:layout_width="260dp"
+                android:layout_height="120dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="36dp"
+                app:layout_constraintStart_toEndOf="@+id/trip_select_photo_tv"
+                app:layout_constraintTop_toBottomOf="@+id/add_trip_duration_et"
+                app:srcCompat="@android:drawable/ic_menu_gallery" />
+
+            <CheckBox
+                android:id="@+id/trip_mark_done_cb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="112dp"
+                android:text="@string/mark_done"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/trip_select_photo_tv" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
     <Button
         android:id="@+id/add_trip_btn"
         android:layout_width="287dp"
         android:layout_height="64dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="40dp"
         android:background="@drawable/round_btn"
         android:text="Save"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_trip_duration_tv" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/add_trip_place_input_layout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/add_trip_place_tv"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/add_trip_place_tv">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/add_trip_place_et"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/info"
-            android:hint="Place" />
-    </com.google.android.material.textfield.TextInputLayout>
+        app:layout_constraintTop_toBottomOf="@+id/add_trip_sv"
+        app:layout_constraintVertical_bias="0.186" />
 </androidx.constraintlayout.widget.ConstraintLayout>

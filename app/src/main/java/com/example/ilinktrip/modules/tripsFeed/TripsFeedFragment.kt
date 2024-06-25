@@ -7,12 +7,14 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import com.example.ilinktrip.interfaces.TripFeedItemClickListener
 import com.example.ilinktrip.models.Model
 import com.example.ilinktrip.models.Trip
 import com.example.ilinktrip.models.TripWithUserDetails
+import com.example.ilinktrip.models.User
 import com.example.ilinktrip.modules.tripsFeed.adapter.TripRecyclerViewAdapter
 import com.ilinktrip.R
 import com.ilinktrip.databinding.FragmentTripsFeedListBinding
@@ -20,6 +22,7 @@ import com.ilinktrip.databinding.FragmentTripsFeedListBinding
 
 class TripsFeedFragment : Fragment() {
     var tripsRecyclerView: RecyclerView? = null
+    var currentUser: User? = null
     var tripsWithUsers: MutableList<TripWithUserDetails>? = null
     var listener: TripFeedItemClickListener? = null
     var adapter: TripRecyclerViewAdapter? = null
@@ -37,7 +40,6 @@ class TripsFeedFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         binding = FragmentTripsFeedListBinding.inflate(inflater, container, false)
-//        val view = inflater.inflate(R.layout.fragment_trips_feed_list, container, false)
 
         reloadTrips()
 
@@ -45,10 +47,8 @@ class TripsFeedFragment : Fragment() {
         binding!!.tripsFeedRecyclerView.setHasFixedSize(true)
         binding!!.tripsFeedRecyclerView.layoutManager = LinearLayoutManager(context)
         tripsRecyclerView = view.findViewById(R.id.trips_feed_recycler_view)
-//        tripsRecyclerView?.setHasFixedSize(true)
-//        tripsRecyclerView?.layoutManager =
 
-        adapter = TripRecyclerViewAdapter(tripsWithUsers, listener)
+        adapter = TripRecyclerViewAdapter(currentUser, tripsWithUsers, listener)
         tripsRecyclerView?.adapter = adapter
 
         adapter?.listener = object : TripFeedItemClickListener {
@@ -63,11 +63,13 @@ class TripsFeedFragment : Fragment() {
                                     Navigation.findNavController(view).navigate(
                                         TripsFeedFragmentDirections.actionTripsFeedFragmentToTripDetailsFragment(
                                             tripWithUser.userDetails,
-                                            tripWithUser.trip.country,
-                                            tripWithUser.trip.place,
-                                            tripWithUser.trip.startsAt.toString(),
-                                            tripWithUser.trip.durationInWeeks,
+                                            tripWithUser.trip,
                                             favoritesIds.contains(tripWithUser.userDetails.id)
+
+//                                            tripWithUser.trip.country,
+//                                            tripWithUser.trip.place,
+//                                            tripWithUser.trip.startsAt.toString(),
+//                                            tripWithUser.trip.durationInWeeks,
                                         )
                                     )
                                 }
@@ -78,6 +80,35 @@ class TripsFeedFragment : Fragment() {
                 }
             }
 
+            override fun onTripEditClick(position: Int) {
+                val tripWithUser = tripsWithUsers?.get(position)
+
+                if (tripWithUser != null) {
+                    Navigation.findNavController(view).navigate(
+                        TripsFeedFragmentDirections.actionTripsFeedFragmentToAddTripFragment(
+                            tripWithUser.trip
+                        )
+                    )
+                }
+            }
+
+            override fun onTripDeleteClick(position: Int) {
+                val tripWithUser = tripsWithUsers?.get(position)
+
+                if (tripWithUser != null) {
+                    Model.instance().deleteTrip(tripWithUser.trip) { isSuccessful ->
+                        if (isSuccessful) {
+                            reloadTrips()
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "error occurred trying deleting the trip",
+                                Toast.LENGTH_SHORT
+                            )
+                        }
+                    }
+                }
+            }
         }
 
         return view
@@ -86,11 +117,18 @@ class TripsFeedFragment : Fragment() {
     private fun reloadTrips() {
         binding!!.tripsFeedProgressBar.visibility = View.VISIBLE
 
-        Model.instance().getAllTrips { trips ->
-            val tripsList = trips.toMutableList()
-            this.tripsWithUsers = tripsList
-            adapter?.setData(tripsList)
-            binding!!.tripsFeedProgressBar.visibility = View.GONE
+        Model.instance().getCurrentUser { user ->
+            if (user != null) {
+                this.currentUser = user
+                Model.instance().getAllTrips { trips ->
+                    val tripsList = trips.toMutableList()
+                    this.tripsWithUsers = tripsList
+                    adapter?.setData(tripsList, user)
+                    binding!!.tripsFeedProgressBar.visibility = View.GONE
+                }
+            } else {
+                Toast.makeText(this.context, "error getting user data", Toast.LENGTH_SHORT)
+            }
         }
     }
 

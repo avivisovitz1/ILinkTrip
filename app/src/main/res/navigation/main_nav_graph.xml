@@ -17,6 +17,9 @@
             android:name="showOnlyUserTrips"
             android:defaultValue="false"
             app:argType="boolean" />
+        <action
+            android:id="@+id/action_tripsFeedFragment_to_addTripFragment"
+            app:destination="@id/addTripFragment" />
     </fragment>
     <fragment
         android:id="@+id/tripDetailsFragment"
@@ -24,34 +27,25 @@
         android:label="Trip Details"
         tools:layout="@layout/fragment_trip_details">
         <argument
-            android:name="country"
-            android:defaultValue='""'
-            app:argType="string" />
-        <argument
-            android:name="place"
-            android:defaultValue='""'
-            app:argType="string" />
-        <argument
-            android:name="startsAt"
-            android:defaultValue='""'
-            app:argType="string" />
-        <argument
-            android:name="duration"
-            android:defaultValue="0"
-            app:argType="integer" />
-        <argument
             android:name="userDetails"
             app:argType="com.example.ilinktrip.models.User" />
         <argument
             android:name="isFavorite"
             app:argType="boolean"
             android:defaultValue="false" />
+        <argument
+            android:name="trip"
+            app:argType="com.example.ilinktrip.models.Trip" />
     </fragment>
     <fragment
         android:id="@+id/addTripFragment"
         android:name="com.example.ilinktrip.AddTripFragment"
         android:label="Add New Trip"
-        tools:layout="@layout/fragment_add_trip" />
+        tools:layout="@layout/fragment_add_trip" >
+        <argument
+            android:name="trip"
+            app:argType="com.example.ilinktrip.models.Trip" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.ilinktrip.modules.profile.ProfileFragment"

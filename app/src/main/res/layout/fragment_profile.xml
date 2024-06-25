@@ -11,9 +11,9 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/profile_iv"
-            android:layout_width="162dp"
-            android:layout_height="158dp"
-            android:layout_marginTop="-1dp"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_marginTop="10dp"
             android:adjustViewBounds="true"
             android:background="@color/info"
             android:src="@drawable/girl_avatar"

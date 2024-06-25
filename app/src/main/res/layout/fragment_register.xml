@@ -257,6 +257,7 @@
             android:layout_width="287dp"
             android:layout_height="64dp"
             android:layout_marginTop="60dp"
+            android:layout_marginBottom="20dp"
             android:background="@drawable/round_btn"
             android:text="@string/register_btn"
             android:textColor="@color/white"
@@ -264,7 +265,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/register_confirm_password_tv" />
+            app:layout_constraintTop_toBottomOf="@+id/register_select_photo_tv" />
 
         <RadioGroup
             android:id="@+id/register_gender_rg"
@@ -300,6 +301,31 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/register_select_photo_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="60dp"
+            android:text="@string/select_profile_photo"
+            android:textColor="@color/info"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/register_confirm_password_tv" />
+
+        <ImageButton
+            android:id="@+id/register_photo_ib"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="32dp"
+            android:scaleType="fitCenter"
+            android:src="@android:drawable/ic_menu_gallery"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.14"
+            app:layout_constraintStart_toEndOf="@+id/register_select_photo_tv"
+            app:layout_constraintTop_toBottomOf="@+id/register_confirm_password_input_layout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
