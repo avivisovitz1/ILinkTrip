@@ -44,7 +44,9 @@
         tools:layout="@layout/fragment_add_trip" >
         <argument
             android:name="trip"
-            app:argType="com.example.ilinktrip.models.Trip" />
+            app:argType="com.example.ilinktrip.models.Trip"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"

@@ -24,7 +24,7 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="44dp"
-                android:text="Country"
+                android:text="@string/country"
                 android:textColor="@color/info"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -35,11 +35,12 @@
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="30dp"
                 android:layout_marginEnd="8dp"
                 android:backgroundTint="@color/info"
-                app:layout_constraintBaseline_toBaselineOf="@+id/add_trip_country_tv"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/add_trip_country_tv" />
+                app:layout_constraintStart_toEndOf="@+id/add_trip_country_tv"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/add_trip_place_tv"
@@ -47,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="60dp"
-                android:text="Place"
+                android:text="@string/place"
                 android:textColor="@color/info"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -59,7 +60,7 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="60dp"
-                android:text="Starts At"
+                android:text="@string/starts_at"
                 android:textColor="@color/info"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -87,7 +88,7 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="60dp"
-                android:text="Duration"
+                android:text="@string/duration"
                 android:textColor="@color/info"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -123,7 +124,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/info"
-                    android:hint="Place" />
+                    android:hint="@string/place" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView

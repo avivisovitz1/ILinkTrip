@@ -12,7 +12,6 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import com.example.ilinktrip.interfaces.TripFeedItemClickListener
 import com.example.ilinktrip.models.Model
-import com.example.ilinktrip.models.Trip
 import com.example.ilinktrip.models.TripWithUserDetails
 import com.example.ilinktrip.models.User
 import com.example.ilinktrip.modules.tripsFeed.adapter.TripRecyclerViewAdapter
@@ -22,7 +21,6 @@ import com.ilinktrip.databinding.FragmentTripsFeedListBinding
 
 class TripsFeedFragment : Fragment() {
     var tripsRecyclerView: RecyclerView? = null
-    var currentUser: User? = null
     var tripsWithUsers: MutableList<TripWithUserDetails>? = null
     var listener: TripFeedItemClickListener? = null
     var adapter: TripRecyclerViewAdapter? = null
@@ -48,7 +46,7 @@ class TripsFeedFragment : Fragment() {
         binding!!.tripsFeedRecyclerView.layoutManager = LinearLayoutManager(context)
         tripsRecyclerView = view.findViewById(R.id.trips_feed_recycler_view)
 
-        adapter = TripRecyclerViewAdapter(currentUser, tripsWithUsers, listener)
+        adapter = TripRecyclerViewAdapter(showOnlyUserTrips, tripsWithUsers, listener)
         tripsRecyclerView?.adapter = adapter
 
         adapter?.listener = object : TripFeedItemClickListener {
@@ -65,11 +63,6 @@ class TripsFeedFragment : Fragment() {
                                             tripWithUser.userDetails,
                                             tripWithUser.trip,
                                             favoritesIds.contains(tripWithUser.userDetails.id)
-
-//                                            tripWithUser.trip.country,
-//                                            tripWithUser.trip.place,
-//                                            tripWithUser.trip.startsAt.toString(),
-//                                            tripWithUser.trip.durationInWeeks,
                                         )
                                     )
                                 }
@@ -119,11 +112,10 @@ class TripsFeedFragment : Fragment() {
 
         Model.instance().getCurrentUser { user ->
             if (user != null) {
-                this.currentUser = user
                 Model.instance().getAllTrips { trips ->
                     val tripsList = trips.toMutableList()
                     this.tripsWithUsers = tripsList
-                    adapter?.setData(tripsList, user)
+                    adapter?.setData(tripsList, showOnlyUserTrips)
                     binding!!.tripsFeedProgressBar.visibility = View.GONE
                 }
             } else {

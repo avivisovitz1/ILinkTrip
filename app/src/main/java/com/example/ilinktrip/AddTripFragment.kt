@@ -21,14 +21,18 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
+import com.example.ilinktrip.models.Country
+import com.example.ilinktrip.models.CountryModel
 import com.example.ilinktrip.models.Model
 import com.example.ilinktrip.models.Trip
+import com.example.ilinktrip.modules.countriesSpinner.CountrySpinnerAdapter
 import com.ilinktrip.R
 import com.ilinktrip.databinding.FragmentAddTripBinding
 import com.squareup.picasso.Picasso
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.Calendar
+import java.util.UUID
 
 class AddTripFragment : Fragment() {
     private var selectedCountry: String? = null
@@ -37,7 +41,9 @@ class AddTripFragment : Fragment() {
     private val saved_formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     private val ui_formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
     private var binding: FragmentAddTripBinding? = null
+    private var countriesList: List<Country> = listOf()
     private var photosPicker: ActivityResultLauncher<PickVisualMediaRequest>? = null
+    private var countriesSpinnerAdapter: CountrySpinnerAdapter? = null
     private val args by navArgs<AddTripFragmentArgs>()
     private val trip by lazy {
         args.trip
@@ -76,16 +82,25 @@ class AddTripFragment : Fragment() {
         )
 
         val view = binding!!.root
-        val countriesList = arrayOf("Argentina", "Brazil", "Columbia", "Thailand")
-        val adapter =
-            ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, countriesList)
+
+        CountryModel.instance().getAllCountries { countriesList ->
+            if (countriesList != null) {
+                this.countriesList = countriesList
+                countriesSpinnerAdapter?.setData(countriesList)
+            } else {
+                Toast.makeText(this.context, "error getting countries list", Toast.LENGTH_SHORT)
+            }
+        }
+
+        countriesSpinnerAdapter =
+            CountrySpinnerAdapter(requireActivity(), countriesList)
 
         val countrySpinner = view.findViewById<Spinner>(R.id.add_trip_country_spinner)
-        countrySpinner.adapter = adapter
+        countrySpinner.adapter = countriesSpinnerAdapter
         countrySpinner.onItemSelectedListener = object :
             AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                selectedCountry = countriesList[p2]
+                selectedCountry = countriesList[p2].name.common
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -109,7 +124,7 @@ class AddTripFragment : Fragment() {
         }
 
         saveBtn.setOnClickListener { view ->
-            val country = countrySpinner.selectedItem.toString()
+            val country = countrySpinner.selectedItem as Country
             val place = placeEt.text.toString()
             val startsAt = LocalDate.parse(startsAtEt?.text.toString(), ui_formatter)
             val duration = durationEt.text.toString().toInt()
@@ -122,7 +137,16 @@ class AddTripFragment : Fragment() {
             Model.instance().getCurrentUser { user ->
                 if (user != null) {
                     val trip =
-                        Trip(trip.id, user.id, country, place, startsAt, duration, "", isDone)
+                        Trip(
+                            trip?.id ?: UUID.randomUUID().toString(),
+                            user.id,
+                            country.name.common ?: "",
+                            place,
+                            startsAt,
+                            duration,
+                            "",
+                            isDone
+                        )
 
                     Model.instance().uploadTripImage(trip.id, bitmap) { url ->
                         if (url != null) {
@@ -143,17 +167,22 @@ class AddTripFragment : Fragment() {
         }
 
         if (trip != null) {
-            countrySpinner.setSelection(countriesList.indexOf(trip.country))
-            placeEt.setText(trip.place)
+            val countryName =
+                countriesList.indexOfFirst { country -> country.name.common == trip!!.country }
+            if (countryName != null) {
+                countrySpinner.setSelection(countryName)
+            }
+
+            placeEt.setText(trip!!.place)
             startsAtEt?.setText(
-                LocalDate.parse(trip.startsAt.toString(), saved_formatter).format(ui_formatter)
+                LocalDate.parse(trip!!.startsAt.toString(), saved_formatter).format(ui_formatter)
                     .toString()
             )
-            durationEt.setText(trip.durationInWeeks.toString())
-            markDoneCb.isChecked = trip.isDone
-            if (trip.avatarUrl != "") {
+            durationEt.setText(trip!!.durationInWeeks.toString())
+            markDoneCb.isChecked = trip!!.isDone
+            if (trip!!.avatarUrl != "") {
                 Picasso.get()
-                    .load(trip.avatarUrl)
+                    .load(trip!!.avatarUrl)
                     .resize(260, 120)
                     .centerInside()
                     .into(binding!!.tripPhotoIb)
