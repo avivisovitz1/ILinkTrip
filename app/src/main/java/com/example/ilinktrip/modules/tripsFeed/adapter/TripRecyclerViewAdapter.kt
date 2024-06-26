@@ -4,22 +4,24 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ilinktrip.interfaces.TripFeedItemClickListener
+import com.example.ilinktrip.models.CountryModel
+import com.example.ilinktrip.models.Model
 import com.example.ilinktrip.models.Trip
 import com.example.ilinktrip.models.TripWithUserDetails
 import com.example.ilinktrip.models.User
 import com.ilinktrip.R
 
 class TripRecyclerViewAdapter(
-    private var currentUser: User?,
+    private var showOnlyUserTrips: Boolean,
     private var tripsWithUsers: MutableList<TripWithUserDetails>?,
     var listener: TripFeedItemClickListener?
 ) :
     RecyclerView.Adapter<TripViewHolder>() {
 
     //when data in fragment was updated, we need to update also data in adapter
-    fun setData(data: MutableList<TripWithUserDetails>, currentUser: User) {
+    fun setData(data: MutableList<TripWithUserDetails>, showOnlyUserTrips: Boolean) {
         this.tripsWithUsers = data
-        this.currentUser = currentUser
+        this.showOnlyUserTrips = showOnlyUserTrips
         notifyDataSetChanged()
     }
 
@@ -33,9 +35,17 @@ class TripRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: TripViewHolder, position: Int) {
         val tripWithUser = tripsWithUsers?.get(position)
-        val hasActions = tripWithUser?.userDetails?.id == currentUser?.id
+        var countryPhotoUrl = ""
 
-        holder.bind(tripWithUser, hasActions)
+        if (tripWithUser != null) {
+            CountryModel.instance().getCountryByName(tripWithUser.trip.country) { country ->
+                if (country != null) {
+                    countryPhotoUrl = country.flags.png
+                }
+            }
+        }
+
+        holder.bind(tripWithUser, showOnlyUserTrips, countryPhotoUrl)
     }
 }
 

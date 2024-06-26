@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ilinktrip.interfaces.TripFeedItemClickListener
+import com.example.ilinktrip.models.CountryModel.Companion.COUNTRIES_API_BASE_URL
 import com.example.ilinktrip.models.TripWithUserDetails
 import com.ilinktrip.R
 import com.squareup.picasso.Picasso
@@ -21,6 +22,7 @@ class TripViewHolder(
     private var userNameTv: TextView? = null
     private var countryPlaceTv: TextView? = null
     private var userProfileIv: ImageView? = null
+    private var countryFlagIv: ImageView? = null
     private var editIb: ImageButton? = null
     private var deleteIb: ImageButton? = null
 
@@ -28,6 +30,7 @@ class TripViewHolder(
         userNameTv = itemView.findViewById(R.id.trip_user_name_tv)
         countryPlaceTv = itemView.findViewById(R.id.trip_country_place_tv)
         userProfileIv = itemView.findViewById(R.id.trip_user_profile_iv)
+        countryFlagIv = itemView.findViewById(R.id.trip_country_flag_iv)
         editIb = itemView.findViewById(R.id.edit_trip_ib)
         deleteIb = itemView.findViewById(R.id.delete_trip_ib)
 
@@ -56,7 +59,7 @@ class TripViewHolder(
         }
     }
 
-    fun bind(tripWithUser: TripWithUserDetails?, hasActions: Boolean) {
+    fun bind(tripWithUser: TripWithUserDetails?, hasActions: Boolean, countryPhotoUrl: String) {
         this.tripWithUser = tripWithUser
         this.userNameTv?.text =
             tripWithUser?.userDetails?.firstName + " " + tripWithUser?.userDetails?.lastName
@@ -71,6 +74,12 @@ class TripViewHolder(
             this.userProfileIv?.setImageResource(avatar)
         }
         this.countryPlaceTv?.text = tripWithUser?.trip?.country + ", " + tripWithUser?.trip?.place
+
+        if (countryPhotoUrl != "") {
+            Picasso.get().load(countryPhotoUrl).resize(42, 26)
+                .placeholder(R.drawable.no_trip)
+                .into(countryFlagIv)
+        }
 
         if (hasActions) {
             this.editIb?.visibility = View.VISIBLE
