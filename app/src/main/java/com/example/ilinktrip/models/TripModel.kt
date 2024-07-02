@@ -46,7 +46,7 @@ class TripModel {
         val tripLocalLastUpdate = Trip.localLastUpdate
         val userLocalLastUpdate = User.localLastUpdate
         firebaseModel.getAllTrips(tripLocalLastUpdate) { trips ->
-            firebaseModel.getUsers(listOf(), userLocalLastUpdate) { users ->
+             firebaseModel.getUsers(listOf(), userLocalLastUpdate) { users ->
                 processSyncData(users, trips)
             }
         }

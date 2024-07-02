@@ -6,13 +6,13 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.ilinktrip.interfaces.RemoveFavoriteTravelerClickListener
 import com.example.ilinktrip.entities.User
+import com.example.ilinktrip.interfaces.FavoriteTravelerListListeners
 import com.ilinktrip.R
 
 class TravelerViewHolder(
     itemView: View,
-    listener: RemoveFavoriteTravelerClickListener?
+    listener: FavoriteTravelerListListeners?
 ) :
     RecyclerView.ViewHolder(itemView) {
     var user: User? = null
@@ -24,9 +24,11 @@ class TravelerViewHolder(
         val linkTravelerBtn = itemView.findViewById<Button>(R.id.link_traveler_btn)
         val markedFavoriteIb = itemView.findViewById<ImageButton>(R.id.mark_favorite_traveler_btn)
 
-//        linkTravelerBtn.setOnClickListener()
+        linkTravelerBtn.setOnClickListener {
+            user?.let { it1 -> listener?.onLinkWithUserClick(it1, adapterPosition) }
+        }
+
         markedFavoriteIb.setOnClickListener {
-            // remove traveler for favorites in db
             markedFavoriteIb.setImageResource(R.drawable.check_star)
             user?.let { it1 -> listener?.onRemoveFavoriteClick(it1, adapterPosition) }
         }
