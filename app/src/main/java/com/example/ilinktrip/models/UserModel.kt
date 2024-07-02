@@ -1,9 +1,12 @@
 package com.example.ilinktrip.models
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.os.Looper
 import androidx.core.os.HandlerCompat
 import androidx.lifecycle.MutableLiveData
+import com.example.ilinktrip.application.GlobalConst
+import com.example.ilinktrip.application.ILinkTripApplication
 import com.example.ilinktrip.dao.AppLocalDatabase
 import com.example.ilinktrip.entities.User
 import com.example.ilinktrip.services.AuthService
@@ -34,6 +37,7 @@ class UserModel {
     fun getCurrentUser(): MutableLiveData<User?> {
         return this.currentUser
     }
+
     fun refetchCurrentUser(callback: (Boolean) -> Unit) {
         authenticationService.getCurrentUser { firebaseUser ->
             if (firebaseUser != null) {

@@ -23,6 +23,7 @@
 
     <!-- Login Fragment -->
     <string name="login_btn">Login</string>
+    <string name="remember_me">Remember me</string>
     <string name="logout_btn">Log Out</string>
 
     <!-- User -->
