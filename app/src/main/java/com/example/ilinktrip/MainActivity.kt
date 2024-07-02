@@ -1,5 +1,6 @@
 package com.example.ilinktrip
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -9,6 +10,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.example.ilinktrip.application.GlobalConst
+import com.example.ilinktrip.application.ILinkTripApplication
 import com.example.ilinktrip.models.UserModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ilinktrip.R
@@ -44,12 +47,25 @@ class MainActivity : AppCompatActivity() {
             } else if (item.itemId == R.id.profileFragment) {
                 navControler!!.navigate(R.id.action_global_profileFragment)
             } else if (item.itemId === R.id.logoutBtn) {
-                UserModel.instance().signOut()
-                val intent = Intent(parent, RegisterActivity::class.java)
-                startActivity(intent)
+                signOut()
             }
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun signOut() {
+        UserModel.instance().signOut()
+        val sharedPreferences = ILinkTripApplication.Globals.appContext?.getSharedPreferences(
+            GlobalConst.SHARED_PREFERENCES,
+            Context.MODE_PRIVATE
+        )
+        val editor = sharedPreferences?.edit()
+        editor?.putString(GlobalConst.AUTHENTICATED_USER, "")
+        editor?.apply()
+        val intent = Intent(this, RegisterActivity::class.java)
+        startActivity(intent)
+
+        finish()
     }
 }
