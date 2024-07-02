@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
@@ -25,15 +26,14 @@ class TripsFeedFragment : Fragment() {
     private var listener: TripFeedItemClickListener? = null
     private var adapter: TripRecyclerViewAdapter? = null
     private var binding: FragmentTripsFeedListBinding? = null
-    var viewModel: TripsFeedFragmentViewModel? = null
-    var userViewModel: UserViewModel? = null
+    private var isUserTrips: Boolean = false
+    private var viewModel: TripsFeedFragmentViewModel? = null
+    private var userViewModel: UserViewModel? = null
     private val args by navArgs<TripsFeedFragmentArgs>()
-
-    val showOnlyUserTrips by lazy { args.showOnlyUserTrips }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {}
+        isUserTrips = args.showOnlyUserTrips
     }
 
     override fun onCreateView(
@@ -41,14 +41,27 @@ class TripsFeedFragment : Fragment() {
     ): View? {
         binding = FragmentTripsFeedListBinding.inflate(inflater, container, false)
 
+        if (isUserTrips) {
+            (requireActivity() as AppCompatActivity).supportActionBar?.title = "My Trips"
+        } else {
+            (requireActivity() as AppCompatActivity).supportActionBar?.title = "Trips Nearby"
+            (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(
+                false
+            )
+        }
+
         val view = binding!!.root;
         binding!!.tripsFeedRecyclerView.setHasFixedSize(true)
         binding!!.tripsFeedRecyclerView.layoutManager = LinearLayoutManager(context)
         tripsRecyclerView = view.findViewById(R.id.trips_feed_recycler_view)
 
+        val data =
+            if (isUserTrips) viewModel?.getData(isUserTrips)?.value else
+                viewModel?.getData(isUserTrips)?.value
+
         adapter = TripRecyclerViewAdapter(
-            showOnlyUserTrips,
-            viewModel?.getData()?.value,
+            isUserTrips,
+            data,
             viewModel?.getCountriesFlags()?.value,
             listener,
         )
@@ -56,52 +69,23 @@ class TripsFeedFragment : Fragment() {
 
         adapter?.listener = object : TripFeedItemClickListener {
             override fun onTripClick(position: Int) {
-                val tripWithUser = viewModel?.getData()?.value?.get(position)
-
-                if (tripWithUser != null) {
-                    val favoriteIds = userViewModel?.getUserFavoriteUsersIds()?.value
-                    Navigation.findNavController(view).navigate(
-                        TripsFeedFragmentDirections.actionTripsFeedFragmentToTripDetailsFragment(
-                            tripWithUser.userDetails,
-                            tripWithUser.trip,
-                            favoriteIds?.contains(tripWithUser.userDetails.id) ?: false
-                        )
-                    )
-                } else {
-                    Toast.makeText(
-                        context,
-                        "error getting trip or user details",
-                        Toast.LENGTH_SHORT
-                    )
-                }
+                onTripClick(view, position)
             }
 
             override fun onTripEditClick(position: Int) {
-                val tripWithUser = viewModel?.getData()?.value?.get(position)
-
-                if (tripWithUser != null) {
-                    Navigation.findNavController(view).navigate(
-                        TripsFeedFragmentDirections.actionTripsFeedFragmentToAddTripFragment(
-                            tripWithUser.trip
-                        )
-                    )
-                }
+                editTrip(view, position)
             }
 
             override fun onTripDeleteClick(position: Int) {
-                val tripWithUser = viewModel?.getData()?.value?.get(position)
-
-                if (tripWithUser != null) {
-                    viewModel?.deleteTrip(tripWithUser.trip)
-                }
+                deleteTrip(position)
             }
         }
 
-
-        viewModel?.getData()?.observe(viewLifecycleOwner) { trips ->
-            adapter?.setData(trips, showOnlyUserTrips)
-            viewModel?.fetchTripsCountriesFlags(trips)
-        }
+        viewModel?.getData(isUserTrips)
+            ?.observe(viewLifecycleOwner) { trips ->
+                adapter?.setData(trips, isUserTrips)
+                viewModel?.fetchTripsCountriesFlags(trips)
+            }
 
         viewModel?.getCountriesFlags()?.observe(viewLifecycleOwner) { countriesFlags ->
             adapter?.setCountriesFlags(countriesFlags)
@@ -130,14 +114,50 @@ class TripsFeedFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        viewModel = ViewModelProvider(this)[TripsFeedFragmentViewModel::class.java]
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
+        viewModel = ViewModelProvider(this, TripsFeedFragmentViewModelFactory(userViewModel!!)).get(
+            TripsFeedFragmentViewModel::class.java
+        )
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(showOnlyUserTrips: Boolean) = TripsFeedFragment().apply {
-            arguments = Bundle().apply {}
+    fun onTripClick(view: View, position: Int) {
+        val tripWithUser = viewModel?.getData(isUserTrips)?.value?.get(position)
+
+        if (tripWithUser != null) {
+            val favoriteIds = userViewModel?.getUserFavoriteUsersIds()?.value
+            Navigation.findNavController(view).navigate(
+                TripsFeedFragmentDirections.actionTripsFeedFragmentToTripDetailsFragment(
+                    tripWithUser.userDetails,
+                    tripWithUser.trip,
+                    favoriteIds?.contains(tripWithUser.userDetails.id) ?: false
+                )
+            )
+        } else {
+            Toast.makeText(
+                context,
+                "error getting trip or user details",
+                Toast.LENGTH_SHORT
+            )
+        }
+    }
+
+    private fun editTrip(view: View, position: Int) {
+        val tripWithUser = viewModel?.getData(isUserTrips)?.value?.get(position)
+
+        if (tripWithUser != null) {
+            Navigation.findNavController(view).navigate(
+                TripsFeedFragmentDirections.actionTripsFeedFragmentToAddTripFragment(
+                    tripWithUser.trip
+                )
+            )
+        }
+    }
+
+    private fun deleteTrip(position: Int) {
+        val tripWithUser = viewModel?.getData(isUserTrips)?.value?.get(position)
+
+        if (tripWithUser != null) {
+            viewModel?.deleteTrip(tripWithUser.trip)
         }
     }
 }

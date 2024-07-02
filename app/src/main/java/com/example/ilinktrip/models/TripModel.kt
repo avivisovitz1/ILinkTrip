@@ -1,6 +1,7 @@
 package com.example.ilinktrip.models
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.ilinktrip.dao.AppLocalDatabase
@@ -58,12 +59,15 @@ class TripModel {
                 var tripTime = Trip.localLastUpdate
                 var userTime = User.localLastUpdate
 
+                Log.e("tripsBefore", localDb.tripDao().getAll().toString())
                 for (trip in trips) {
                     localDb.tripDao().insertAll(trip)
                     if (tripTime < trip.getTripLastUpdated()) {
                         tripTime = trip.getTripLastUpdated()
                     }
                 }
+                Log.e("tripsAfter", localDb.tripDao().getAll().toString())
+
 
                 for (user in users) {
                     localDb.userDao().insertAll(user.value)
@@ -94,6 +98,9 @@ class TripModel {
     fun deleteTrip(trip: Trip, callback: (Boolean) -> Unit) {
         firebaseModel.deleteTrip(trip) { isSuccessful ->
             if (isSuccessful) {
+                executor.execute {
+                    localDb.tripDao().delete(trip)
+                }
                 refreshAllTrips()
                 callback(true)
             }
