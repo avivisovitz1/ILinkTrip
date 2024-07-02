@@ -9,7 +9,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
-import com.example.ilinktrip.models.Model
+import com.example.ilinktrip.models.UserModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ilinktrip.R
 
@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
             } else if (item.itemId == R.id.profileFragment) {
                 navControler!!.navigate(R.id.action_global_profileFragment)
             } else if (item.itemId === R.id.logoutBtn) {
-                Model.instance().signOut()
+                UserModel.instance().signOut()
                 val intent = Intent(parent, RegisterActivity::class.java)
                 startActivity(intent)
             }

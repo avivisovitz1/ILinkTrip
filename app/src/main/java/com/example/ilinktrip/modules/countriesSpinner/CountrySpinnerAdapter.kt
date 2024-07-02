@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import com.example.ilinktrip.models.Country
+import com.example.ilinktrip.entities.Country
 import com.ilinktrip.R
 import com.squareup.picasso.Picasso
 

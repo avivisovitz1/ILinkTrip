@@ -1,7 +1,6 @@
 package com.example.ilinktrip.services
 
 import android.util.Log
-import com.example.ilinktrip.models.User
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -20,6 +19,7 @@ class AuthService {
                 val user = auth.currentUser
                 callback(user)
             } else {
+                Log.e("Error Sign In", task.exception.toString())
                 callback(null)
             }
         }

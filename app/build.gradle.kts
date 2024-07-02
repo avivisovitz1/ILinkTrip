@@ -79,6 +79,8 @@ dependencies {
     implementation("com.google.code.gson:gson:2.6.2")
     implementation("com.squareup.retrofit2:converter-gson:2.1.0")
 
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

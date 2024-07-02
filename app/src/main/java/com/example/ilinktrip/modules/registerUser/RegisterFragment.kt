@@ -1,5 +1,6 @@
-package com.example.ilinktrip
+package com.example.ilinktrip.modules.registerUser
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -17,10 +18,11 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
-import com.example.ilinktrip.models.Model
-import com.example.ilinktrip.models.User
+import com.example.ilinktrip.MainActivity
+import com.example.ilinktrip.entities.User
 import com.ilinktrip.R
 import com.ilinktrip.databinding.FragmentRegisterBinding
 import com.squareup.picasso.Picasso
@@ -33,6 +35,7 @@ class RegisterFragment : Fragment() {
     }
     private var binding: FragmentRegisterBinding? = null
     private var photosPicker: ActivityResultLauncher<PickVisualMediaRequest>? = null
+    private var viewModel: RegisterFragmentViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +63,6 @@ class RegisterFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         binding = FragmentRegisterBinding.inflate(
             inflater,
             container,
@@ -128,43 +130,33 @@ class RegisterFragment : Fragment() {
             progressBar.visibility = View.VISIBLE
 
             if (userDetails == null) {
-                Model.instance().signUp(user) { isSuccessful ->
-                    if (isSuccessful) {
-                        Model.instance().uploadProfileImage(user.id, bitmap) { url ->
-                            if (url != null) {
-                                user.avatarUrl = url
-                                Model.instance().addUserDetails(user) { isSuccessful ->
-                                    progressBar.visibility = View.GONE
-                                    if (isSuccessful) {
-                                        val intent =
-                                            Intent(this.context, MainActivity::class.java)
-                                        startActivity(intent)
-                                    }
-                                }
-                            }
-                        }
+                viewModel?.signUp(user, bitmap) { successful ->
+                    progressBar.visibility = View.GONE
+                    if (successful) {
+                        val intent = Intent(this.context, MainActivity::class.java)
+                        startActivity(intent)
                     } else {
-                        Toast.makeText(
-                            this.context,
-                            "error while trying to sign up",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        Toast.makeText(context, "error signing up", Toast.LENGTH_LONG)
                     }
                 }
             } else {
-                Model.instance().uploadProfileImage(user.id, bitmap) { url ->
-                    if (url != null) {
-                        user.avatarUrl = url
-                        Model.instance().updateUserDetails(user) {
-                            progressBar.visibility = View.GONE
-                            Navigation.findNavController(view).popBackStack()
-                        }
+                viewModel?.updateUserData(user, bitmap) { isSuccessful ->
+                    progressBar.visibility = View.GONE
+                    if (isSuccessful) {
+                        Navigation.findNavController(view).popBackStack()
+                    } else {
+                        Toast.makeText(context, "error updating user data", Toast.LENGTH_LONG)
                     }
                 }
             }
         }
 
         return view
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        viewModel = ViewModelProvider(this)[RegisterFragmentViewModel::class.java]
     }
 
     companion object {

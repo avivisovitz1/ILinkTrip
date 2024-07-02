@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ilinktrip.interfaces.RemoveFavoriteTravelerClickListener
-import com.example.ilinktrip.models.User
+import com.example.ilinktrip.entities.User
 import com.ilinktrip.R
 
 class TravelerViewHolder(

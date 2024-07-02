@@ -5,29 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ProgressBar
-        android:id="@+id/trips_feed_progressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="78dp"
-        android:layout_height="64dp"
-        app:layout_constraintBottom_toBottomOf="@+id/trips_feed_recycler_view"
-        app:layout_constraintEnd_toEndOf="@+id/trips_feed_recycler_view"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="@+id/trips_feed_recycler_view"
-        app:layout_constraintTop_toTopOf="@+id/trips_feed_recycler_view"
-        app:layout_constraintVertical_bias="0.464" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/trips_feed_recycler_view"
-        android:name="com.example.ilinktrip.TripsFeedFragment"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/trips_feed_swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:context=".modules.tripsFeed.TripsFeedFragment"
-        tools:listitem="@layout/fragment_trip_row" />
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/trips_feed_recycler_view"
+            android:name="com.example.ilinktrip.TripsFeedFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:context=".modules.tripsFeed.TripsFeedFragment"
+            tools:listitem="@layout/fragment_trip_row" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

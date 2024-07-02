@@ -1,4 +1,4 @@
-package com.example.ilinktrip.models
+package com.example.ilinktrip.entities
 
 class Country(
     val name: CountryName,

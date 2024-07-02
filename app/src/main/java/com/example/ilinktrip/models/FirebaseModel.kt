@@ -1,10 +1,13 @@
 package com.example.ilinktrip.models
 
+import android.util.Log
+import com.example.ilinktrip.entities.Trip
+import com.example.ilinktrip.entities.User
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.firestoreSettings
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.memoryCacheSettings
 import com.google.firebase.ktx.Firebase
-import org.threeten.bp.LocalDate
 
 class FirebaseModel {
     private val db = Firebase.firestore
@@ -24,38 +27,47 @@ class FirebaseModel {
         db.firestoreSettings = settings
     }
 
-    fun getUserDataByEmail(email: String, callback: (user: User?) -> Unit) {
-        db.collection(USERS_COLLECTION).whereEqualTo("email", email).get().addOnCompleteListener {
+    fun getUserDataByEmail(email: String, since: Long, callback: (user: User?) -> Unit) {
+        db.collection(USERS_COLLECTION).whereEqualTo("email", email).whereGreaterThanOrEqualTo(
+            User.USER_LAST_UPDATED,
+            Timestamp(since, 0)
+        ).get().addOnCompleteListener {
             when (it.isSuccessful) {
                 true -> {
-                    val userRes = it.result.documents[0]
-                    val id = userRes.getString("id") ?: ""
-                    val email = userRes.getString("email") ?: ""
-                    val firstName = userRes.getString("firstName") ?: ""
-                    val lastName = userRes.getString("lastName") ?: ""
-                    val age = userRes.getLong("age")?.toInt() ?: 0
-                    val gender = userRes.getString("gender") ?: ""
-                    val phoneNumber = userRes.getString("phoneNumber") ?: ""
-                    val avatarUrl = userRes.getString("avatarUrl") ?: ""
-                    val password = userRes.getString("password") ?: ""
-                    val user = User(
-                        id, email, firstName, lastName, age, gender,
-                        phoneNumber, avatarUrl, password
-                    )
+                    val usersRes = it.result.documents
 
-                    callback(user)
+                    if (usersRes.size > 0) {
+                        callback(usersRes[0].data?.let { it1 -> User.fromJson(it1) })
+                    } else {
+                        callback(null)
+                    }
                 }
 
-                false -> callback(null)
+                false -> {
+                    Log.e("TAG", it.exception?.message.toString())
+                    callback(null)
+                }
             }
+        }.addOnFailureListener {
+            Log.e("Error getting user", it.printStackTrace().toString())
         }
     }
 
-    fun getUsers(usersIds: List<String>, callback: (MutableMap<String, User>) -> Unit) {
+    fun getUsers(
+        usersIds: List<String>,
+        since: Long,
+        callback: (MutableMap<String, User>) -> Unit
+    ) {
         val getUsersQuery = if (usersIds.isEmpty()) {
-            db.collection(USERS_COLLECTION)
+            db.collection(USERS_COLLECTION).whereGreaterThanOrEqualTo(
+                User.USER_LAST_UPDATED,
+                Timestamp(since, 0)
+            )
         } else {
-            db.collection(USERS_COLLECTION).whereIn("id", usersIds)
+            db.collection(USERS_COLLECTION).whereIn("id", usersIds).whereGreaterThanOrEqualTo(
+                User.USER_LAST_UPDATED,
+                Timestamp(since, 0)
+            )
         }
 
         getUsersQuery.get()
@@ -65,20 +77,7 @@ class FirebaseModel {
                         val users: MutableMap<String, User> = mutableMapOf()
                         for (userRes in it.result) {
                             val id = userRes.getString("id") ?: ""
-                            val email = userRes.getString("email") ?: ""
-                            val firstName = userRes.getString("firstName") ?: ""
-                            val lastName = userRes.getString("lastName") ?: ""
-                            val age = userRes.getLong("age")?.toInt() ?: 0
-                            val gender = userRes.getString("gender") ?: ""
-                            val phoneNumber = userRes.getString("phoneNumber") ?: ""
-                            val avatarUrl = userRes.getString("avatarUrl") ?: ""
-                            val password = userRes.getString("password") ?: ""
-                            val user = User(
-                                id, email, firstName, lastName, age, gender,
-                                phoneNumber, avatarUrl, password
-                            )
-
-                            users[id] = user
+                            users[id] = User.fromJson(userRes.data)
                         }
                         callback(users)
                     }
@@ -89,28 +88,24 @@ class FirebaseModel {
     }
 
     fun upsertUser(user: User, callback: (isSuccessful: Boolean) -> Unit) {
-        val userDto = hashMapOf(
-            "id" to user.id,
-            "email" to user.email,
-            "firstName" to user.firstName,
-            "lastName" to user.lastName,
-            "age" to user.age,
-            "gender" to user.gender,
-            "phoneNumber" to user.phoneNumber,
-            "avatarUrl" to user.avatarUrl,
-            "password" to user.password
-        )
+        val userDto = user.json
+        try {
+            db.collection(USERS_COLLECTION).document(user.id).set(userDto).addOnCompleteListener {
+                if (it.isSuccessful) {
+                    callback(true)
+                } else {
+                    callback(false)
 
-        db.collection(USERS_COLLECTION).document(user.id).set(userDto).addOnSuccessListener {
-            callback(true)
-        }.addOnFailureListener {
-            callback(false)
+                }
+            }
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
         }
     }
 
     fun deleteTrip(trip: Trip, callback: (Boolean) -> Unit) {
         db.collection(TRIPS_COLLECTION).document(trip.id).delete().addOnCompleteListener {
-            if(it.isSuccessful) {
+            if (it.isSuccessful) {
                 callback(true)
             } else {
                 callback(false)
@@ -118,45 +113,19 @@ class FirebaseModel {
         }
     }
 
-    fun getAllTrips(callback: (List<TripWithUserDetails>) -> Unit) {
-        db.collection(TRIPS_COLLECTION).get().addOnCompleteListener {
+    fun getAllTrips(since: Long, callback: (List<Trip>) -> Unit) {
+        db.collection(TRIPS_COLLECTION).whereGreaterThanOrEqualTo(
+            Trip.TRIP_LAST_UPDATED,
+            Timestamp(since, 0)
+        ).get().addOnCompleteListener {
             when (it.isSuccessful) {
                 true -> {
                     val trips: MutableList<Trip> = mutableListOf()
-                    val usersIds: MutableList<String> = mutableListOf()
                     for (tripRes in it.result) {
-                        val id = tripRes.id ?: ""
-                        val userId = tripRes.getString("userId") ?: ""
-                        val country = tripRes.getString("country") ?: ""
-                        val place = tripRes.getString("place") ?: ""
-                        val startsAt = tripRes.getString("startsAt") ?: ""
-                        val durationInWeeks = tripRes.getLong("durationInWeeks")?.toInt() ?: 0
-                        val avatarUrl = tripRes.getString("avatarUrl") ?: ""
-                        val isDone = tripRes.getBoolean("isDone") ?: false
-
-
-                        val trip = Trip(
-                            id,
-                            userId,
-                            country,
-                            place,
-                            LocalDateTypeConverter().dateToLocalDate(startsAt) ?: LocalDate.now(),
-                            durationInWeeks,
-                            avatarUrl,
-                            isDone
-                        )
-
-                        usersIds.add(userId)
-                        trips.add(trip)
+                        trips.add(Trip.fromJson(tripRes.id, tripRes.data))
                     }
 
-                    this.getUsers(usersIds.distinct()) {
-                        val tripsWithUsers = trips.mapNotNull { trip ->
-                            val user = it[trip.userId]
-                            user?.let { TripWithUserDetails(trip, user) }
-                        }
-                        callback(tripsWithUsers)
-                    }
+                    callback(trips)
                 }
 
                 false -> callback(mutableListOf())
@@ -164,26 +133,23 @@ class FirebaseModel {
         }
     }
 
-    fun addTrip(trip: Trip, callback: () -> Unit) {
-        val startsAtDate = LocalDateTypeConverter().fromLocalDate(trip.startsAt)
-
-        val tripDto = hashMapOf(
-            "userId" to trip.userId,
-            "country" to trip.country,
-            "place" to trip.place,
-            "startsAt" to startsAtDate,
-            "durationInWeeks" to trip.durationInWeeks,
-            "avatarUrl" to trip.avatarUrl,
-            "isDone" to trip.isDone
-        )
-
-        db.collection(TRIPS_COLLECTION).document(trip.id).set(tripDto).addOnSuccessListener {
-            callback()
+    fun upsertTrip(trip: Trip, callback: (Boolean) -> Unit) {
+        db.collection(TRIPS_COLLECTION).document(trip.id).set(trip.json).addOnCompleteListener {
+            if (it.isSuccessful) {
+                callback(true)
+            } else {
+                callback(false)
+            }
         }
     }
 
-    fun addUserFavoriteTraveler(userId: String, favoriteTravelerId: String, callback: () -> Unit) {
-        db.collection(USERS_COLLECTION).document(userId).collection(FAVORITE_TRAVELERS_COLLECTION)
+    fun addUserFavoriteTraveler(
+        userId: String,
+        favoriteTravelerId: String,
+        callback: () -> Unit
+    ) {
+        db.collection(USERS_COLLECTION).document(userId)
+            .collection(FAVORITE_TRAVELERS_COLLECTION)
             .document(favoriteTravelerId).set({}).addOnSuccessListener {
                 callback()
             }
@@ -194,14 +160,16 @@ class FirebaseModel {
         favoriteTravelerId: String,
         callback: () -> Unit
     ) {
-        db.collection(USERS_COLLECTION).document(userId).collection(FAVORITE_TRAVELERS_COLLECTION)
+        db.collection(USERS_COLLECTION).document(userId)
+            .collection(FAVORITE_TRAVELERS_COLLECTION)
             .document(favoriteTravelerId).delete().addOnSuccessListener {
                 callback()
             }
     }
 
     fun getUserFavoriteTravelers(userId: String, callback: (List<String>) -> Unit) {
-        db.collection(USERS_COLLECTION).document(userId).collection(FAVORITE_TRAVELERS_COLLECTION)
+        db.collection(USERS_COLLECTION).document(userId)
+            .collection(FAVORITE_TRAVELERS_COLLECTION)
             .get().addOnCompleteListener {
                 when (it.isSuccessful) {
                     true -> {

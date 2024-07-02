@@ -1,6 +1,7 @@
-package com.example.ilinktrip
+package com.example.ilinktrip.modules.addTrip
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
@@ -19,28 +19,27 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.graphics.drawable.toBitmap
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
-import com.example.ilinktrip.models.Country
+import com.example.ilinktrip.entities.Country
 import com.example.ilinktrip.models.CountryModel
-import com.example.ilinktrip.models.Model
-import com.example.ilinktrip.models.Trip
 import com.example.ilinktrip.modules.countriesSpinner.CountrySpinnerAdapter
+import com.example.ilinktrip.utils.DateUtils
+import com.example.ilinktrip.viewModels.UserViewModel
 import com.ilinktrip.R
 import com.ilinktrip.databinding.FragmentAddTripBinding
 import com.squareup.picasso.Picasso
 import org.threeten.bp.LocalDate
-import org.threeten.bp.format.DateTimeFormatter
 import java.util.Calendar
-import java.util.UUID
 
 class AddTripFragment : Fragment() {
     private var selectedCountry: String? = null
     private val calendar: Calendar = Calendar.getInstance()
     private var startsAtEt: EditText? = null
-    private val saved_formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    private val ui_formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
     private var binding: FragmentAddTripBinding? = null
+    private var viewModel: AddTripViewModel? = null
+    private var userViewModel: UserViewModel? = null
     private var countriesList: List<Country> = listOf()
     private var photosPicker: ActivityResultLauncher<PickVisualMediaRequest>? = null
     private var countriesSpinnerAdapter: CountrySpinnerAdapter? = null
@@ -65,7 +64,7 @@ class AddTripFragment : Fragment() {
                         this.context,
                         "an error occurred trying to get photo",
                         Toast.LENGTH_SHORT
-                    )
+                    ).show()
                     Log.d("PhotoPicker", "No media selected")
                 }
             }
@@ -89,6 +88,7 @@ class AddTripFragment : Fragment() {
                 countriesSpinnerAdapter?.setData(countriesList)
             } else {
                 Toast.makeText(this.context, "error getting countries list", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 
@@ -126,7 +126,8 @@ class AddTripFragment : Fragment() {
         saveBtn.setOnClickListener { view ->
             val country = countrySpinner.selectedItem as Country
             val place = placeEt.text.toString()
-            val startsAt = LocalDate.parse(startsAtEt?.text.toString(), ui_formatter)
+            val startsAt =
+                LocalDate.parse(startsAtEt?.text.toString(), DateUtils().getUIDateFormatter())
             val duration = durationEt.text.toString().toInt()
             val isDone = markDoneCb.isChecked
 
@@ -134,34 +135,15 @@ class AddTripFragment : Fragment() {
             binding!!.tripPhotoIb.buildDrawingCache()
             val bitmap = (binding!!.tripPhotoIb.drawable).toBitmap()
 
-            Model.instance().getCurrentUser { user ->
-                if (user != null) {
-                    val trip =
-                        Trip(
-                            trip?.id ?: UUID.randomUUID().toString(),
-                            user.id,
-                            country.name.common ?: "",
-                            place,
-                            startsAt,
-                            duration,
-                            "",
-                            isDone
-                        )
+            val user = userViewModel?.getCurrentUser()?.value
 
-                    Model.instance().uploadTripImage(trip.id, bitmap) { url ->
-                        if (url != null) {
-                            trip.avatarUrl = url
-                            Model.instance().upsertTrip(trip) {
-                                Navigation.findNavController(view).popBackStack()
-                            }
-                        } else {
-                            Toast.makeText(
-                                this.context,
-                                "error saving trip photo",
-                                Toast.LENGTH_SHORT
-                            )
-                        }
-                    }
+            if (user != null) {
+                viewModel?.upsertTrip(
+                    user,
+                    trip?.id, country.name.common ?: "", place, startsAt,
+                    duration, isDone, bitmap
+                ) {
+                    Navigation.findNavController(view).popBackStack()
                 }
             }
         }
@@ -175,7 +157,8 @@ class AddTripFragment : Fragment() {
 
             placeEt.setText(trip!!.place)
             startsAtEt?.setText(
-                LocalDate.parse(trip!!.startsAt.toString(), saved_formatter).format(ui_formatter)
+                LocalDate.parse(trip!!.startsAt.toString(), DateUtils().getDataDateFormatter())
+                    .format(DateUtils().getUIDateFormatter())
                     .toString()
             )
             durationEt.setText(trip!!.durationInWeeks.toString())
@@ -187,6 +170,10 @@ class AddTripFragment : Fragment() {
                     .centerInside()
                     .into(binding!!.tripPhotoIb)
             }
+        }
+
+        viewModel?.getToastMessage()?.observe(viewLifecycleOwner) { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
 
         return view
@@ -204,7 +191,7 @@ class AddTripFragment : Fragment() {
                     val localDate = LocalDate.of(year, month, day)
 
                     // Format the LocalDateTime
-                    val formattedDate = localDate.format(ui_formatter)
+                    val formattedDate = localDate.format(DateUtils().getUIDateFormatter())
 
                     startsAtEt?.setText(formattedDate)
                 },
@@ -213,6 +200,12 @@ class AddTripFragment : Fragment() {
                 calendar.get(Calendar.DAY_OF_MONTH)
             )
         }?.show()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        viewModel = ViewModelProvider(this)[AddTripViewModel::class.java]
+        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
     }
 
     companion object {
