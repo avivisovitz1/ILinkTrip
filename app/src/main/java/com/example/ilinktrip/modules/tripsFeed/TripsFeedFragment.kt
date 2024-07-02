@@ -17,7 +17,6 @@ import com.example.ilinktrip.interfaces.TripFeedItemClickListener
 import com.example.ilinktrip.models.TripModel
 import com.example.ilinktrip.modules.tripsFeed.adapter.TripRecyclerViewAdapter
 import com.example.ilinktrip.viewModels.UserViewModel
-import com.ilinktrip.R
 import com.ilinktrip.databinding.FragmentTripsFeedListBinding
 
 
@@ -53,7 +52,7 @@ class TripsFeedFragment : Fragment() {
         val view = binding!!.root;
         binding!!.tripsFeedRecyclerView.setHasFixedSize(true)
         binding!!.tripsFeedRecyclerView.layoutManager = LinearLayoutManager(context)
-        tripsRecyclerView = view.findViewById(R.id.trips_feed_recycler_view)
+        tripsRecyclerView = binding!!.tripsFeedRecyclerView
 
         val data =
             if (isUserTrips) viewModel?.getData(isUserTrips)?.value else

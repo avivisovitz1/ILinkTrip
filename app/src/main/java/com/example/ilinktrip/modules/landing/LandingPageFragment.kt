@@ -8,23 +8,30 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.navigation.Navigation
 import com.ilinktrip.R
+import com.ilinktrip.databinding.FragmentAddTripBinding
+import com.ilinktrip.databinding.FragmentLandingPageBinding
 
 class LandingPageFragment : Fragment() {
+    private var binding: FragmentLandingPageBinding? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_landing_page, container, false)
-        val getStartedBtn = view.findViewById<Button>(R.id.get_started_btn)
-        val signInBtn = view.findViewById<Button>(R.id.sign_in_btn)
+        binding = FragmentLandingPageBinding.inflate(
+            inflater,
+            container,
+            false
+        )
+
+        val view = binding!!.root
+        val getStartedBtn = binding!!.getStartedBtn
+        val signInBtn = binding!!.signInBtn
 
         getStartedBtn.setOnClickListener {
             Navigation.findNavController(view)
                 .navigate(
                     LandingPageFragmentDirections.actionLandingPageFragmentToRegisterFragment()
                 )
-//            listener?.onGetStartedClick()
         }
 
         signInBtn.setOnClickListener {
@@ -35,14 +42,5 @@ class LandingPageFragment : Fragment() {
         }
 
         return view
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance() =
-            LandingPageFragment().apply {
-                arguments = Bundle().apply {
-                }
-            }
     }
 }

@@ -6,8 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -40,8 +38,6 @@ class ProfileFragment : Fragment() {
         val user = viewModel?.getCurrentUser()?.value
         if (user != null) {
             val profileIv = binding!!.profileIv
-            val userTv = view.findViewById<TextView>(R.id.profile_username_tv)
-            userTv.text = "ahhhhh"
             binding!!.profileUsernameTv.text = user!!.firstName + " " + user!!.lastName
             binding!!.profileEmailTv.text = user!!.email
 
@@ -58,9 +54,9 @@ class ProfileFragment : Fragment() {
 //                raise error
         }
 
-        val myTripsBtn = view.findViewById<Button>(R.id.profile_my_trips_btn)
-        val myFavoritesBtn = view.findViewById<Button>(R.id.profile_my_favorites_btn)
-        val editProfileBtn = view.findViewById<Button>(R.id.profile_edit_btn)
+        val myTripsBtn = binding!!.profileMyTripsBtn
+        val myFavoritesBtn = binding!!.profileMyFavoritesBtn
+        val editProfileBtn = binding!!.profileEditBtn
 
         myTripsBtn.setOnClickListener {
             Navigation.findNavController(view)
@@ -95,14 +91,5 @@ class ProfileFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         viewModel = ViewModelProvider(this)[UserViewModel::class.java]
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ProfileFragment().apply {
-                arguments = Bundle().apply {
-                }
-            }
     }
 }
