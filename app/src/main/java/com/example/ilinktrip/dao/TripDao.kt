@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.example.ilinktrip.models.Trip
+import com.example.ilinktrip.entities.Trip
 
 @Dao
 interface TripDao {
@@ -21,6 +21,9 @@ interface TripDao {
 
     @Delete
     fun delete(trip: Trip)
+
+    @Query("DELETE FROM trip")
+    fun deleteAll()
 
     @Update
     fun update(trip: Trip)

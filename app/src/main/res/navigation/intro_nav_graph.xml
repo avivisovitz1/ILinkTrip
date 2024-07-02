@@ -7,17 +7,17 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.ilinktrip.LoginFragment"
+        android:name="com.example.ilinktrip.modules.login.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" />
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.example.ilinktrip.RegisterFragment"
+        android:name="com.example.ilinktrip.modules.registerUser.RegisterFragment"
         android:label="fragment_register"
         tools:layout="@layout/fragment_register" />
     <fragment
         android:id="@+id/landingPageFragment"
-        android:name="com.example.ilinktrip.LandingPageFragment"
+        android:name="com.example.ilinktrip.modules.landing.LandingPageFragment"
         android:label="fragment_landing_page"
         tools:layout="@layout/fragment_landing_page" >
         <action

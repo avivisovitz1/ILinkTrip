@@ -1,9 +1,10 @@
-package com.example.ilinktrip.models
+package com.example.ilinktrip.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.example.ilinktrip.entities.User
 import java.util.UUID
 
 @Entity(

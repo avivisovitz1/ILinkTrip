@@ -8,8 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ilinktrip.interfaces.TripFeedItemClickListener
-import com.example.ilinktrip.models.CountryModel.Companion.COUNTRIES_API_BASE_URL
-import com.example.ilinktrip.models.TripWithUserDetails
+import com.example.ilinktrip.entities.TripWithUser
 import com.ilinktrip.R
 import com.squareup.picasso.Picasso
 
@@ -18,7 +17,7 @@ class TripViewHolder(
     listener: TripFeedItemClickListener?,
 ) :
     RecyclerView.ViewHolder(itemView) {
-    private var tripWithUser: TripWithUserDetails? = null
+    private var tripWithUser: TripWithUser? = null
     private var userNameTv: TextView? = null
     private var countryPlaceTv: TextView? = null
     private var userProfileIv: ImageView? = null
@@ -59,7 +58,7 @@ class TripViewHolder(
         }
     }
 
-    fun bind(tripWithUser: TripWithUserDetails?, hasActions: Boolean, countryPhotoUrl: String) {
+    fun bind(tripWithUser: TripWithUser?, hasActions: Boolean, countryPhotoUrl: String) {
         this.tripWithUser = tripWithUser
         this.userNameTv?.text =
             tripWithUser?.userDetails?.firstName + " " + tripWithUser?.userDetails?.lastName

@@ -1,4 +1,4 @@
-package com.example.ilinktrip
+package com.example.ilinktrip.modules.landing
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.navigation.Navigation
-import com.example.ilinktrip.modules.profile.ProfileFragmentDirections
 import com.ilinktrip.R
 
 class LandingPageFragment : Fragment() {

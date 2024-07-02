@@ -1,5 +1,6 @@
-package com.example.ilinktrip
+package com.example.ilinktrip.modules.login
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,10 +11,14 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import com.example.ilinktrip.MainActivity
 import com.example.ilinktrip.models.Model
+import com.example.ilinktrip.modules.tripsFeed.TripsFeedFragmentViewModel
 import com.ilinktrip.R
 
 class LoginFragment : Fragment() {
+    private var viewModel: LoginFragmentViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +43,7 @@ class LoginFragment : Fragment() {
 
             if (email != "" && pass != "") {
                 progressBar.visibility = View.VISIBLE
-                Model.instance().signIn(email, pass) { user ->
+                viewModel?.singIn(email, pass) { user ->
                     progressBar.visibility = View.GONE
                     if (user != null) {
                         val intent = Intent(this.context, MainActivity::class.java)
@@ -49,15 +54,20 @@ class LoginFragment : Fragment() {
                             "email or password are incorrect",
                             Toast.LENGTH_LONG
                         ).show()
-//                    TODO: log error
                     }
                 }
             } else {
-                Toast.makeText(this.context, "enter email and password", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this.context, "enter email and password", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 
         return view
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        viewModel = ViewModelProvider(this)[LoginFragmentViewModel::class.java]
     }
 
     companion object {

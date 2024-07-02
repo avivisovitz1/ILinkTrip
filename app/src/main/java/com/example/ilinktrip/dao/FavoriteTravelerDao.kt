@@ -5,7 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.ilinktrip.models.FavoriteTraveler
+import com.example.ilinktrip.entities.FavoriteTraveler
 
 @Dao
 interface FavoriteTravelerDao {
@@ -21,4 +21,6 @@ interface FavoriteTravelerDao {
     @Delete
     fun delete(connection: FavoriteTraveler)
 
+    @Query("DELETE FROM favorite_traveler")
+    fun deleteAll()
 }

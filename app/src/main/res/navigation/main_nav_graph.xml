@@ -23,28 +23,28 @@
     </fragment>
     <fragment
         android:id="@+id/tripDetailsFragment"
-        android:name="com.example.ilinktrip.modules.tripsFeed.TripDetailsFragment"
+        android:name="com.example.ilinktrip.modules.tripsFeed.tripDetails.TripDetailsFragment"
         android:label="Trip Details"
         tools:layout="@layout/fragment_trip_details">
         <argument
             android:name="userDetails"
-            app:argType="com.example.ilinktrip.models.User" />
+            app:argType="com.example.ilinktrip.entities.User" />
         <argument
             android:name="isFavorite"
             app:argType="boolean"
             android:defaultValue="false" />
         <argument
             android:name="trip"
-            app:argType="com.example.ilinktrip.models.Trip" />
+            app:argType="com.example.ilinktrip.entities.Trip" />
     </fragment>
     <fragment
         android:id="@+id/addTripFragment"
-        android:name="com.example.ilinktrip.AddTripFragment"
+        android:name="com.example.ilinktrip.modules.addTrip.AddTripFragment"
         android:label="Add New Trip"
         tools:layout="@layout/fragment_add_trip" >
         <argument
             android:name="trip"
-            app:argType="com.example.ilinktrip.models.Trip"
+            app:argType="com.example.ilinktrip.entities.Trip"
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>
@@ -65,13 +65,13 @@
     </fragment><action android:id="@+id/action_global_profileFragment" app:destination="@id/profileFragment"/>
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.example.ilinktrip.RegisterFragment"
+        android:name="com.example.ilinktrip.modules.registerUser.RegisterFragment"
         android:label="Edit Profile"
         tools:layout="@layout/fragment_register">
         <argument
             android:name="userDetails"
             android:defaultValue="@null"
-            app:argType="com.example.ilinktrip.models.User"
+            app:argType="com.example.ilinktrip.entities.User"
             app:nullable="true" />
     </fragment>
     <fragment

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     tools:layout="@layout/fragment_landing_page"
-    tools:context="com.example.ilinktrip.LandingPageFragment"
+    tools:context="com.example.ilinktrip.modules.landing.LandingPageFragment"
     >
 
     <TextView
