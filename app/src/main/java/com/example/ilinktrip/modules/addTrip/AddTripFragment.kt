@@ -157,9 +157,10 @@ class AddTripFragment : Fragment() {
 
             placeEt.setText(trip!!.place)
             startsAtEt?.setText(
-                LocalDate.parse(trip!!.startsAt.toString(), DateUtils().getDataDateFormatter())
-                    .format(DateUtils().getUIDateFormatter())
-                    .toString()
+                LocalDate.parse(
+                    trip!!.startsAt.toString(),
+                    DateUtils().getUIDateFormatter()
+                ).toString()
             )
             durationEt.setText(trip!!.durationInWeeks.toString())
             markDoneCb.isChecked = trip!!.isDone
