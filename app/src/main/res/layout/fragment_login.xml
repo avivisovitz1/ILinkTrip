@@ -11,7 +11,7 @@
         android:layout_width="100dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="164dp"
         android:text="@string/email"
         android:textColor="@color/info"
         android:textSize="16sp"
@@ -68,15 +68,14 @@
         android:id="@+id/login_btn"
         android:layout_width="287dp"
         android:layout_height="64dp"
-        android:layout_marginTop="60dp"
         android:background="@drawable/round_btn"
         android:text="@string/login_btn"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_password_tv"
-        app:layout_constraintVertical_bias="0.035" />
+        app:layout_constraintTop_toBottomOf="@+id/login_remember_me_cb"
+        app:layout_constraintVertical_bias="0.092" />
 
     <ProgressBar
         android:id="@+id/login_progress_bar"
@@ -89,5 +88,17 @@
         app:layout_constraintHorizontal_bias="0.468"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <CheckBox
+        android:id="@+id/login_remember_me_cb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="40dp"
+        android:text="@string/remember_me"
+        android:textColor="@color/info"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_password_tv" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
