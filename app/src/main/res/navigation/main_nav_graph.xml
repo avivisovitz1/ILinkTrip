@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav_graph"
-    app:startDestination="@id/tripsFeedFragment">
+    app:startDestination="@id/mainNavigatorFragment">
 
     <fragment
         android:id="@+id/tripsFeedFragment"
@@ -55,7 +55,11 @@
         tools:layout="@layout/fragment_profile">
         <action
             android:id="@+id/action_profileFragment_to_tripsFeedFragment"
-            app:destination="@id/tripsFeedFragment" />
+            app:destination="@id/tripsFeedFragment" >
+            <argument
+                android:name="showOnlyUserTrips"
+                android:defaultValue="true" />
+        </action>
         <action
             android:id="@+id/action_profileFragment_to_registerFragment"
             app:destination="@id/registerFragment" />
@@ -79,5 +83,23 @@
         android:name="com.example.ilinktrip.modules.favoriteTravelersList.FavoriteTravelersListFragment"
         android:label="@string/my_favorites"
         tools:layout="@layout/fragment_travelers_list" />
+    <fragment
+        android:id="@+id/mainNavigatorFragment"
+        android:name="com.example.ilinktrip.modules.mainNavigator.MainNavigatorFragment"
+        android:label="fragment_main_navigator"
+        tools:layout="@layout/fragment_main_navigator" >
+        <action
+            android:id="@+id/action_mainNavigatorFragment_to_tripsFeedFragment"
+            app:destination="@id/tripsFeedFragment" >
+            <argument
+                android:name="showOnlyUserTrips"
+                android:defaultValue="false" />
+        </action>
+    </fragment>
+    <action
+        android:id="@+id/action_global_tripsFeedFragment"
+        app:destination="@id/tripsFeedFragment"
+        app:popUpTo="@id/main_nav_graph"
+        app:popUpToInclusive="true" />
 
 </navigation>
