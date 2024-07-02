@@ -3,16 +3,15 @@ package com.example.ilinktrip.modules.favoriteTravelersList.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.ilinktrip.interfaces.RemoveFavoriteTravelerClickListener
+import com.example.ilinktrip.interfaces.FavoriteTravelerListListeners
 import com.example.ilinktrip.models.UserModel
 import com.ilinktrip.R
 
 class TravelerRecyclerViewAdapter(
     private var travelersIds: MutableList<String>?,
-    var listener: RemoveFavoriteTravelerClickListener?,
+    var listener: FavoriteTravelerListListeners?,
 ) :
     RecyclerView.Adapter<TravelerViewHolder>() {
-//    private var listener: RemoveFavoriteTravelerClickListener? = null
 
     fun setData(data: MutableList<String>) {
         this.travelersIds = data

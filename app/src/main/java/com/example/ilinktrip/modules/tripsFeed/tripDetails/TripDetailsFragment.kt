@@ -1,17 +1,19 @@
 package com.example.ilinktrip.modules.tripsFeed.tripDetails
 
 import android.content.Context
-import android.opengl.Visibility
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
+import com.example.ilinktrip.utils.LinkingUtils
 import com.example.ilinktrip.viewModels.UserViewModel
 import com.ilinktrip.R
 import com.ilinktrip.databinding.FragmentTripDetailsBinding
@@ -50,6 +52,7 @@ class TripDetailsFragment : Fragment() {
         val startsAtTv = view.findViewById<TextView>(R.id.trip_starts_at_tv)
         val durationTv = view.findViewById<TextView>(R.id.trip_duration_tv)
         val markFavoriteTraveler = view.findViewById<ImageButton>(R.id.trip_mark_favorite_traveler)
+        val linkWithTravelerBtn = view.findViewById<Button>(R.id.trip_link_with_traveler_btn)
         val currentUser = userViewModel?.getCurrentUser()?.value
 
         userNameTv.text = userDetails.firstName + " " + userDetails.lastName
@@ -98,6 +101,16 @@ class TripDetailsFragment : Fragment() {
             }
         }
 
+        linkWithTravelerBtn.setOnClickListener {
+            context?.let { it1 ->
+                LinkingUtils.checkSendSMSPermissions(
+                    userDetails.phoneNumber,
+                    it1,
+                    requireActivity()
+                )
+            }
+        }
+
         return view
     }
 
@@ -105,6 +118,19 @@ class TripDetailsFragment : Fragment() {
         super.onAttach(context)
         viewModel = ViewModelProvider(this)[TripDetailsFragmentViewModel::class.java]
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 100) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                context?.let { LinkingUtils.sendSMS(userDetails.phoneNumber, it) }
+            }
+        }
     }
 
     companion object {
