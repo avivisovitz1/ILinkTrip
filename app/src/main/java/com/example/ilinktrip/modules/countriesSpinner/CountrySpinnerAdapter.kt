@@ -9,9 +9,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.example.ilinktrip.entities.Country
 import com.ilinktrip.R
+import com.ilinktrip.databinding.CountrySpinnerItemBinding
+import com.ilinktrip.databinding.FragmentProfileBinding
 import com.squareup.picasso.Picasso
 
-class CountrySpinnerAdapter(val context: Context, var countries: List<Country>) : BaseAdapter() {
+class CountrySpinnerAdapter(val context: Context, private var countries: List<Country>) : BaseAdapter() {
+    private var binding: CountrySpinnerItemBinding? = null
 
     fun setData(data: List<Country>) {
         this.countries = data
@@ -31,11 +34,13 @@ class CountrySpinnerAdapter(val context: Context, var countries: List<Country>) 
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val view: View =
-            convertView ?: LayoutInflater.from(context)
-                .inflate(R.layout.country_spinner_item, parent, false)
-        val countryFlagIv = view.findViewById<ImageView>(R.id.spinner_country_iv)
-        val countryNameTv = view.findViewById<TextView>(R.id.spinner_country_name_tv)
+        binding = CountrySpinnerItemBinding.inflate(
+            LayoutInflater.from(context),
+            parent,
+            false
+        )
+        val countryFlagIv = binding!!.spinnerCountryIv
+        val countryNameTv = binding!!.spinnerCountryNameTv
 
         val country = countries[position]
         countryNameTv.setText(country.name.common)
@@ -45,6 +50,6 @@ class CountrySpinnerAdapter(val context: Context, var countries: List<Country>) 
             .centerInside()
             .into(countryFlagIv)
 
-        return view
+        return binding!!.root
     }
 }

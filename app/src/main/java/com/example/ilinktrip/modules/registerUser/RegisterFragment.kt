@@ -7,11 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ProgressBar
-import android.widget.RadioButton
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
@@ -23,7 +18,6 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import com.example.ilinktrip.MainActivity
 import com.example.ilinktrip.entities.User
-import com.ilinktrip.R
 import com.ilinktrip.databinding.FragmentRegisterBinding
 import com.squareup.picasso.Picasso
 
@@ -70,19 +64,19 @@ class RegisterFragment : Fragment() {
         )
 
         val view = binding!!.root
-        val idEt = view.findViewById<EditText>(R.id.register_id_et)
-        val emailEt = view.findViewById<EditText>(R.id.register_email_et)
-        val firstNameEt = view.findViewById<EditText>(R.id.register_first_name_et)
-        val lastNameEt = view.findViewById<EditText>(R.id.register_last_name_et)
-        val ageEt = view.findViewById<EditText>(R.id.register_age_et)
-        val maleGenderRb = view.findViewById<RadioButton>(R.id.register_gender_male_rb)
-        val femaleGenderRb = view.findViewById<RadioButton>(R.id.register_gender_female_rb)
-        val phoneNumberEt = view.findViewById<EditText>(R.id.register_phone_et)
-        val passwordEt = view.findViewById<EditText>(R.id.register_password_et)
-        val passwordConfEt = view.findViewById<EditText>(R.id.register_confirm_password_et)
-        val choosePhotoIb = view.findViewById<ImageButton>(R.id.register_photo_ib)
-        val registerBtn = view.findViewById<Button>(R.id.register_btn)
-        val progressBar = view.findViewById<ProgressBar>(R.id.register_progress_bar)
+        val idEt = binding!!.registerIdEt
+        val emailEt = binding!!.registerEmailEt
+        val firstNameEt = binding!!.registerFirstNameEt
+        val lastNameEt = binding!!.registerLastNameEt
+        val ageEt = binding!!.registerAgeEt
+        val maleGenderRb = binding!!.registerGenderMaleRb
+        val femaleGenderRb = binding!!.registerGenderFemaleRb
+        val phoneNumberEt = binding!!.registerPhoneEt
+        val passwordEt = binding!!.registerPasswordEt
+        val passwordConfEt = binding!!.registerConfirmPasswordEt
+        val choosePhotoIb = binding!!.registerPhotoIb
+        val registerBtn = binding!!.registerBtn
+        val progressBar = binding!!.registerProgressBar
 
         if (userDetails != null) {
             idEt.setText(userDetails!!.id)
@@ -157,15 +151,5 @@ class RegisterFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         viewModel = ViewModelProvider(this)[RegisterFragmentViewModel::class.java]
-    }
-
-    companion object {
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance() =
-            RegisterFragment().apply {
-                arguments = Bundle().apply {
-                }
-            }
     }
 }

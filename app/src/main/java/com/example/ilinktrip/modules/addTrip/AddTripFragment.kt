@@ -95,7 +95,7 @@ class AddTripFragment : Fragment() {
         countriesSpinnerAdapter =
             CountrySpinnerAdapter(requireActivity(), countriesList)
 
-        val countrySpinner = view.findViewById<Spinner>(R.id.add_trip_country_spinner)
+        val countrySpinner = binding!!.addTripCountrySpinner
         countrySpinner.adapter = countriesSpinnerAdapter
         countrySpinner.onItemSelectedListener = object :
             AdapterView.OnItemSelectedListener {
@@ -108,12 +108,12 @@ class AddTripFragment : Fragment() {
             }
         }
 
-        val placeEt = view.findViewById<EditText>(R.id.add_trip_place_et)
-        startsAtEt = view.findViewById(R.id.add_trip_starts_at_et)
-        val durationEt = view.findViewById<EditText>(R.id.add_trip_duration_et)
-        val checkPhotoIb = view.findViewById<ImageButton>(R.id.trip_photo_ib)
-        val markDoneCb = view.findViewById<CheckBox>(R.id.trip_mark_done_cb)
-        val saveBtn = view.findViewById<Button>(R.id.add_trip_btn)
+        val placeEt = binding!!.addTripPlaceEt
+        startsAtEt = binding!!.addTripStartsAtEt
+        val durationEt = binding!!.addTripDurationEt
+        val checkPhotoIb = binding!!.tripPhotoIb
+        val markDoneCb = binding!!.tripMarkDoneCb
+        val saveBtn = binding!!.addTripBtn
 
         startsAtEt?.setOnClickListener { view ->
             openPicker()
@@ -207,14 +207,5 @@ class AddTripFragment : Fragment() {
         super.onAttach(context)
         viewModel = ViewModelProvider(this)[AddTripViewModel::class.java]
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
-    }
-
-    companion object {
-        //        @JvmStatic
-        fun newInstance() =
-            AddTripFragment().apply {
-                arguments = Bundle().apply {
-                }
-            }
     }
 }
