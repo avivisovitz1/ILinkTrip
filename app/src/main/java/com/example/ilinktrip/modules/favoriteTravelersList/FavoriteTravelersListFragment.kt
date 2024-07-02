@@ -10,10 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import com.example.ilinktrip.interfaces.RemoveFavoriteTravelerClickListener
 import com.example.ilinktrip.models.Model
 import com.example.ilinktrip.entities.User
+import com.example.ilinktrip.interfaces.FavoriteTravelerListListeners
 import com.example.ilinktrip.modules.favoriteTravelersList.adapter.TravelerRecyclerViewAdapter
+import com.example.ilinktrip.utils.LinkingUtils
 import com.example.ilinktrip.viewModels.UserViewModel
 import com.ilinktrip.R
 import com.ilinktrip.databinding.FragmentTravelersListBinding
@@ -24,7 +25,7 @@ class FavoriteTravelersListFragment : Fragment() {
     private var adapter: TravelerRecyclerViewAdapter? = null
     private var binding: FragmentTravelersListBinding? = null
     private var userViewModel: UserViewModel? = null
-    var listener: RemoveFavoriteTravelerClickListener? = null
+    var listener: FavoriteTravelerListListeners? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +46,7 @@ class FavoriteTravelersListFragment : Fragment() {
         adapter = TravelerRecyclerViewAdapter(travelersIds, listener)
         travelersListRecyclerView?.adapter = adapter
 
-        adapter?.listener = object : RemoveFavoriteTravelerClickListener {
+        adapter?.listener = object : FavoriteTravelerListListeners {
             override fun onRemoveFavoriteClick(user: User, position: Int) {
                 val currentUser = userViewModel?.getCurrentUser()?.value
 
@@ -61,6 +62,13 @@ class FavoriteTravelersListFragment : Fragment() {
                         Toast.LENGTH_SHORT
                     )
                         .show()
+                }
+            }
+
+            override fun onLinkWithUserClick(user: User, position: Int) {
+                context?.let {
+                    LinkingUtils.checkSendSMSPermissions(user.phoneNumber,
+                        it, requireActivity())
                 }
             }
         }
