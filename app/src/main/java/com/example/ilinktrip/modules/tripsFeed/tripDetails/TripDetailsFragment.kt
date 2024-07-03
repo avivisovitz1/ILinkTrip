@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.example.ilinktrip.utils.LinkingUtils
+import com.example.ilinktrip.viewModels.FavoriteTravelersViewModel
 import com.example.ilinktrip.viewModels.UserViewModel
 import com.ilinktrip.R
 import com.ilinktrip.databinding.FragmentTripDetailsBinding
@@ -23,7 +24,7 @@ import com.squareup.picasso.Picasso
 class TripDetailsFragment : Fragment() {
     private val args by navArgs<TripDetailsFragmentArgs>()
     private var binding: FragmentTripDetailsBinding? = null
-    private var viewModel: TripDetailsFragmentViewModel? = null
+    private var viewModel: FavoriteTravelersViewModel? = null
     private var userViewModel: UserViewModel? = null
     private var isInFavorites: Boolean = false
 
@@ -86,17 +87,19 @@ class TripDetailsFragment : Fragment() {
 
             if (currentUser != null) {
                 if (!isInFavorites) {
-                    viewModel?.addToFavorites(currentUser.id, userDetails.id) {
-                        markFavoriteTraveler.setImageResource(R.drawable.star)
-                        isInFavorites = true
-                        Toast.makeText(context, "added to favorites", Toast.LENGTH_LONG).show()
-                    }
+                    viewModel?.addToFavorites(currentUser.id, userDetails.id)
+//                    viewModel?.addToFavorites(currentUser.id, userDetails.id) {
+//                        markFavoriteTraveler.setImageResource(R.drawable.star)
+//                        isInFavorites = true
+//                        Toast.makeText(context, "added to favorites", Toast.LENGTH_LONG).show()
+//                    }
                 } else {
-                    viewModel?.deleteFromFavorites(currentUser.id, userDetails.id) {
-                        markFavoriteTraveler.setImageResource(R.drawable.check_star)
-                        isInFavorites = false
-                        Toast.makeText(context, "removed from favorites", Toast.LENGTH_LONG).show()
-                    }
+                    viewModel?.deleteFromFavorites(currentUser.id, userDetails.id)
+//                    viewModel?.deleteFromFavorites(currentUser.id, userDetails.id) {
+//                        markFavoriteTraveler.setImageResource(R.drawable.check_star)
+//                        isInFavorites = false
+//                        Toast.makeText(context, "removed from favorites", Toast.LENGTH_LONG).show()
+//                    }
                 }
             }
         }
@@ -111,12 +114,22 @@ class TripDetailsFragment : Fragment() {
             }
         }
 
+        userViewModel?.getUserFavoriteUsersIds()?.observe(viewLifecycleOwner) { favoritesIds ->
+            isInFavorites = favoritesIds.contains(userDetails.id)
+            val avatar = if (isInFavorites) R.drawable.star else R.drawable.check_star
+            markFavoriteTraveler.setImageResource(avatar)
+        }
+
+        viewModel?.getToastMessage()?.observe(viewLifecycleOwner) { message ->
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        }
+
         return view
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        viewModel = ViewModelProvider(this)[TripDetailsFragmentViewModel::class.java]
+        viewModel = ViewModelProvider(this)[FavoriteTravelersViewModel::class.java]
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
     }
 

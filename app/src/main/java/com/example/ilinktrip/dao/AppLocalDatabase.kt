@@ -12,7 +12,7 @@ import com.example.ilinktrip.entities.User
 
 @Database(
     entities = [User::class, Trip::class, FavoriteTraveler::class],
-    version = 2
+    version = 1
 )
 @TypeConverters(LocalDateTypeConverter::class)
 abstract class AppLocalDbRepository : RoomDatabase() {
