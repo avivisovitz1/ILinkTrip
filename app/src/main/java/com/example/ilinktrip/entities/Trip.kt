@@ -12,17 +12,8 @@ import com.google.firebase.firestore.FieldValue
 import org.threeten.bp.LocalDate
 import java.util.UUID
 
-//
+
 @Entity
-//    tableName = "trip", foreignKeys = [
-//        ForeignKey(
-//            entity = User::class,
-//            parentColumns = arrayOf("id"),
-//            childColumns = arrayOf("userId"),
-//            onDelete = ForeignKey.CASCADE,
-//        ),
-//    ]
-//)
 data class Trip(
     @PrimaryKey
     var id: String = UUID.randomUUID().toString(),

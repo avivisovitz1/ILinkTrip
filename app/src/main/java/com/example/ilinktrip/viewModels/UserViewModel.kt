@@ -3,7 +3,7 @@ package com.example.ilinktrip.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.ilinktrip.models.Model
+import com.example.ilinktrip.models.FavoriteTravelersModel
 import com.example.ilinktrip.entities.User
 import com.example.ilinktrip.models.UserModel
 
@@ -20,10 +20,13 @@ class UserViewModel : ViewModel() {
 
     init {
         refetchCurrentUser()
-        currentUserDetails.observeForever { user ->
-            if (user != null) {
-                refetchUserFavoriteUsersIds()
-            }
+
+        currentUserDetails.observeForever { currentUserDetails ->
+            FavoriteTravelersModel.instance()
+                .getUserFavoriteTravelers(currentUserDetails?.id ?: "")
+                .observeForever { ids ->
+                    _favoriteUserIds.value = ids
+                }
         }
     }
 
@@ -44,12 +47,6 @@ class UserViewModel : ViewModel() {
             if (!isSuccessful) {
                 toastMessage.postValue("error getting user details")
             }
-        }
-    }
-
-    private fun refetchUserFavoriteUsersIds() {
-        Model.instance().getUserFavoriteTravelers(currentUserDetails?.value?.id ?: "") { ids ->
-            _favoriteUserIds.postValue(ids)
         }
     }
 }

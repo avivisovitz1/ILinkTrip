@@ -10,11 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import com.example.ilinktrip.models.Model
 import com.example.ilinktrip.entities.User
 import com.example.ilinktrip.interfaces.FavoriteTravelerListListeners
 import com.example.ilinktrip.modules.favoriteTravelersList.adapter.TravelerRecyclerViewAdapter
 import com.example.ilinktrip.utils.LinkingUtils
+import com.example.ilinktrip.viewModels.FavoriteTravelersViewModel
 import com.example.ilinktrip.viewModels.UserViewModel
 import com.ilinktrip.R
 import com.ilinktrip.databinding.FragmentTravelersListBinding
@@ -25,11 +25,8 @@ class FavoriteTravelersListFragment : Fragment() {
     private var adapter: TravelerRecyclerViewAdapter? = null
     private var binding: FragmentTravelersListBinding? = null
     private var userViewModel: UserViewModel? = null
-    var listener: FavoriteTravelerListListeners? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private var favoriteTravelersViewModel: FavoriteTravelersViewModel? = null
+    private var listener: FavoriteTravelerListListeners? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,10 +48,7 @@ class FavoriteTravelersListFragment : Fragment() {
                 val currentUser = userViewModel?.getCurrentUser()?.value
 
                 if (currentUser != null) {
-                    Model.instance().deleteFavoriteTraveler(currentUser.id, user.id) {
-                        adapter?.setData(travelersIds!!.filter { id -> id != user.id }
-                            .toMutableList())
-                    }
+                    favoriteTravelersViewModel?.deleteFromFavorites(currentUser.id, user.id)
                 } else {
                     Toast.makeText(
                         context,
@@ -67,10 +61,16 @@ class FavoriteTravelersListFragment : Fragment() {
 
             override fun onLinkWithUserClick(user: User, position: Int) {
                 context?.let {
-                    LinkingUtils.checkSendSMSPermissions(user.phoneNumber,
-                        it, requireActivity())
+                    LinkingUtils.checkSendSMSPermissions(
+                        user.phoneNumber,
+                        it, requireActivity()
+                    )
                 }
             }
+        }
+
+        favoriteTravelersViewModel?.getToastMessage()?.observe(viewLifecycleOwner) { message ->
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
         }
 
         return view
@@ -82,7 +82,7 @@ class FavoriteTravelersListFragment : Fragment() {
         val user = userViewModel?.getCurrentUser()?.value
 
         if (user != null) {
-            Model.instance().getUserFavoriteTravelers(user.id) { favoritesIds ->
+            userViewModel?.getUserFavoriteUsersIds()?.observe(viewLifecycleOwner) { favoritesIds ->
                 val travelersIdsList = favoritesIds.toMutableList()
                 this.travelersIds = travelersIdsList
                 adapter?.setData(travelersIdsList)
@@ -106,14 +106,6 @@ class FavoriteTravelersListFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance() =
-            FavoriteTravelersListFragment().apply {
-                arguments = Bundle().apply {
-                }
-            }
+        favoriteTravelersViewModel = ViewModelProvider(this)[FavoriteTravelersViewModel::class.java]
     }
 }

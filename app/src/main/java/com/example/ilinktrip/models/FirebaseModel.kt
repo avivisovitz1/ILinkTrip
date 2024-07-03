@@ -1,6 +1,7 @@
 package com.example.ilinktrip.models
 
 import android.util.Log
+import com.example.ilinktrip.entities.FavoriteTraveler
 import com.example.ilinktrip.entities.Trip
 import com.example.ilinktrip.entities.User
 import com.google.firebase.Timestamp
@@ -146,38 +147,55 @@ class FirebaseModel {
     fun addUserFavoriteTraveler(
         userId: String,
         favoriteTravelerId: String,
-        callback: () -> Unit
+        callback: (Boolean) -> Unit
     ) {
+        val favoriteTraveler = FavoriteTraveler(userId, favoriteTravelerId)
+
         db.collection(USERS_COLLECTION).document(userId)
             .collection(FAVORITE_TRAVELERS_COLLECTION)
-            .document(favoriteTravelerId).set({}).addOnSuccessListener {
-                callback()
+            .document(favoriteTravelerId).set(favoriteTraveler.json).addOnCompleteListener {
+                if(it.isSuccessful) {
+                    callback(true)
+                } else {
+                    callback(false)
+                }
             }
     }
 
     fun deleteUserFavoriteTraveler(
         userId: String,
         favoriteTravelerId: String,
-        callback: () -> Unit
+        callback: (Boolean) -> Unit
     ) {
         db.collection(USERS_COLLECTION).document(userId)
             .collection(FAVORITE_TRAVELERS_COLLECTION)
-            .document(favoriteTravelerId).delete().addOnSuccessListener {
-                callback()
+            .document(favoriteTravelerId).delete().addOnCompleteListener {
+                if(it.isSuccessful) {
+                    callback(true)
+                } else {
+                    callback(false)
+                }
             }
     }
 
-    fun getUserFavoriteTravelers(userId: String, callback: (List<String>) -> Unit) {
+    fun getUserFavoriteTravelers(
+        userId: String,
+        since: Long,
+        callback: (List<FavoriteTraveler>) -> Unit
+    ) {
         db.collection(USERS_COLLECTION).document(userId)
-            .collection(FAVORITE_TRAVELERS_COLLECTION)
+            .collection(FAVORITE_TRAVELERS_COLLECTION).whereGreaterThanOrEqualTo(
+                FavoriteTraveler.FAVORITE_LAST_UPDATED,
+                Timestamp(since, 0)
+            )
             .get().addOnCompleteListener {
                 when (it.isSuccessful) {
                     true -> {
-                        val userFavorites: MutableList<String> = mutableListOf()
+                        val userFavorites: MutableList<FavoriteTraveler> = mutableListOf()
 
                         for (row in it.result) {
-                            val favoriteTravelerId = row.id ?: ""
-                            userFavorites.add(favoriteTravelerId)
+                            val favoriteUserId = row.id
+                            userFavorites.add(FavoriteTraveler.fromJson(userId, favoriteUserId, row.data))
                         }
 
                         callback(userFavorites)
