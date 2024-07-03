@@ -9,11 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.Button
-import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
@@ -23,11 +19,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import com.example.ilinktrip.entities.Country
-import com.example.ilinktrip.models.CountryModel
 import com.example.ilinktrip.modules.countriesSpinner.CountrySpinnerAdapter
 import com.example.ilinktrip.utils.DateUtils
 import com.example.ilinktrip.viewModels.UserViewModel
-import com.ilinktrip.R
 import com.ilinktrip.databinding.FragmentAddTripBinding
 import com.squareup.picasso.Picasso
 import org.threeten.bp.LocalDate
@@ -40,7 +34,6 @@ class AddTripFragment : Fragment() {
     private var binding: FragmentAddTripBinding? = null
     private var viewModel: AddTripViewModel? = null
     private var userViewModel: UserViewModel? = null
-    private var countriesList: List<Country> = listOf()
     private var photosPicker: ActivityResultLauncher<PickVisualMediaRequest>? = null
     private var countriesSpinnerAdapter: CountrySpinnerAdapter? = null
     private val args by navArgs<AddTripFragmentArgs>()
@@ -81,16 +74,7 @@ class AddTripFragment : Fragment() {
         )
 
         val view = binding!!.root
-
-        CountryModel.instance().getAllCountries { countriesList ->
-            if (countriesList != null) {
-                this.countriesList = countriesList
-                countriesSpinnerAdapter?.setData(countriesList)
-            } else {
-                Toast.makeText(this.context, "error getting countries list", Toast.LENGTH_SHORT)
-                    .show()
-            }
-        }
+        val countriesList = viewModel?.getCountriesList()?.value
 
         countriesSpinnerAdapter =
             CountrySpinnerAdapter(requireActivity(), countriesList)
@@ -100,7 +84,9 @@ class AddTripFragment : Fragment() {
         countrySpinner.onItemSelectedListener = object :
             AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                selectedCountry = countriesList[p2].name.common
+                if (!countriesList.isNullOrEmpty()) {
+                    selectedCountry = countriesList?.get(p2)?.name?.common
+                }
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -138,23 +124,22 @@ class AddTripFragment : Fragment() {
             val user = userViewModel?.getCurrentUser()?.value
 
             if (user != null) {
+                binding!!.addTripProgressBar.visibility = View.VISIBLE
                 viewModel?.upsertTrip(
                     user,
                     trip?.id, country.name.common ?: "", place, startsAt,
                     duration, isDone, bitmap
-                ) {
-                    Navigation.findNavController(view).popBackStack()
+                ) { isSuccessful ->
+                    binding!!.addTripProgressBar.visibility = View.GONE
+                    if (isSuccessful) {
+                        Navigation.findNavController(view).popBackStack()
+                    }
                 }
             }
         }
 
         if (trip != null) {
-            val countryName =
-                countriesList.indexOfFirst { country -> country.name.common == trip!!.country }
-            if (countryName != null) {
-                countrySpinner.setSelection(countryName)
-            }
-
+            setSelectedCountry()
             placeEt.setText(trip!!.place)
             startsAtEt?.setText(
                 LocalDate.parse(
@@ -171,6 +156,11 @@ class AddTripFragment : Fragment() {
                     .centerInside()
                     .into(binding!!.tripPhotoIb)
             }
+        }
+
+        viewModel?.getCountriesList()?.observe(viewLifecycleOwner) { countries ->
+            countriesSpinnerAdapter?.setData(countries)
+            setSelectedCountry()
         }
 
         viewModel?.getToastMessage()?.observe(viewLifecycleOwner) { message ->
@@ -201,6 +191,18 @@ class AddTripFragment : Fragment() {
                 calendar.get(Calendar.DAY_OF_MONTH)
             )
         }?.show()
+    }
+
+    private fun setSelectedCountry() {
+        val countriesList = viewModel?.getCountriesList()?.value
+
+        if (!countriesList.isNullOrEmpty() && trip != null) {
+            val countryName =
+                countriesList?.indexOfFirst { country -> country.name.common == trip!!.country }
+            if (countryName != null) {
+                binding!!.addTripCountrySpinner.setSelection(countryName)
+            }
+        }
     }
 
     override fun onAttach(context: Context) {

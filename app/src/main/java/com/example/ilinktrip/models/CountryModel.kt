@@ -16,9 +16,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 class CountryModel private constructor() {
     companion object {
         private var _instance: CountryModel = CountryModel()
-        const val COUNTRIES_API_BASE_URL = "https://restcountries.com/v3.1/"
-        val gson: Gson = GsonBuilder().setLenient().create()
-        val retrofit = Retrofit.Builder().baseUrl(COUNTRIES_API_BASE_URL)
+        private const val COUNTRIES_API_BASE_URL = "https://restcountries.com/v3.1/"
+        private val gson: Gson = GsonBuilder().setLenient().create()
+        private val retrofit: Retrofit = Retrofit.Builder().baseUrl(COUNTRIES_API_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(gson)).build()
         val countryApi = retrofit.create(CountryApi::class.java)
 
@@ -27,7 +27,16 @@ class CountryModel private constructor() {
         }
     }
 
-    fun getAllCountries(callback: (List<Country>?) -> Unit) {
+    fun getAllCountries(callback: (Boolean) -> Unit): MutableLiveData<List<Country>>? {
+        val liveData = MutableLiveData<List<Country>>()
+        if (liveData.value == null) {
+            fetchAllCountries(liveData, callback)
+        }
+
+        return liveData
+    }
+
+    fun fetchAllCountries(liveData: MutableLiveData<List<Country>>, callback: (Boolean) -> Unit) {
         val call: Call<List<Country>> = countryApi.getAllCountries()
         call.enqueue(object : Callback<List<Country>> {
             override fun onResponse(
@@ -36,14 +45,14 @@ class CountryModel private constructor() {
             ) {
                 if (response != null && response.isSuccessful) {
                     val result = response.body()
-                    callback(result)
-                } else {
-                    callback(null)
+                    liveData?.postValue(result)
+                    callback(true)
                 }
             }
 
             override fun onFailure(call: Call<List<Country>>?, t: Throwable?) {
-                callback(null)
+                Log.e("error getting all countries", t?.message ?: "")
+                callback(false)
             }
         })
     }

@@ -59,14 +59,12 @@ class TripModel {
                 var tripTime = Trip.localLastUpdate
                 var userTime = User.localLastUpdate
 
-                Log.e("tripsBefore", localDb.tripDao().getAll().toString())
                 for (trip in trips) {
                     localDb.tripDao().insertAll(trip)
                     if (tripTime < trip.getTripLastUpdated()) {
                         tripTime = trip.getTripLastUpdated()
                     }
                 }
-                Log.e("tripsAfter", localDb.tripDao().getAll().toString())
 
 
                 for (user in users) {

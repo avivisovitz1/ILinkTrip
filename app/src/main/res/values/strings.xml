@@ -52,4 +52,5 @@
     <!-- Add Trip Fragment -->
     <string name="country">Country</string>
     <string name="place">place</string>
+    <string name="save_trip">Save</string>
 </resources>
