@@ -13,7 +13,11 @@ import com.ilinktrip.databinding.CountrySpinnerItemBinding
 import com.ilinktrip.databinding.FragmentProfileBinding
 import com.squareup.picasso.Picasso
 
-class CountrySpinnerAdapter(val context: Context, private var countries: List<Country>) : BaseAdapter() {
+class CountrySpinnerAdapter(
+    val context: Context,
+    private var countries: List<Country>?
+) :
+    BaseAdapter() {
     private var binding: CountrySpinnerItemBinding? = null
 
     fun setData(data: List<Country>) {
@@ -22,11 +26,11 @@ class CountrySpinnerAdapter(val context: Context, private var countries: List<Co
     }
 
     override fun getCount(): Int {
-        return countries.size
+        return countries?.size ?: 0
     }
 
     override fun getItem(p0: Int): Any {
-        return countries[p0]
+        return countries!!.get(p0)
     }
 
     override fun getItemId(p0: Int): Long {
@@ -42,7 +46,7 @@ class CountrySpinnerAdapter(val context: Context, private var countries: List<Co
         val countryFlagIv = binding!!.spinnerCountryIv
         val countryNameTv = binding!!.spinnerCountryNameTv
 
-        val country = countries[position]
+        val country = countries!![position]
         countryNameTv.setText(country.name.common)
         Picasso.get()
             .load(country.flags.png)
