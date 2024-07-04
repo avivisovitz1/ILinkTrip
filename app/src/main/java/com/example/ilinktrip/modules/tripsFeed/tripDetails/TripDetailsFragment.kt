@@ -88,18 +88,8 @@ class TripDetailsFragment : Fragment() {
             if (currentUser != null) {
                 if (!isInFavorites) {
                     viewModel?.addToFavorites(currentUser.id, userDetails.id)
-//                    viewModel?.addToFavorites(currentUser.id, userDetails.id) {
-//                        markFavoriteTraveler.setImageResource(R.drawable.star)
-//                        isInFavorites = true
-//                        Toast.makeText(context, "added to favorites", Toast.LENGTH_LONG).show()
-//                    }
                 } else {
                     viewModel?.deleteFromFavorites(currentUser.id, userDetails.id)
-//                    viewModel?.deleteFromFavorites(currentUser.id, userDetails.id) {
-//                        markFavoriteTraveler.setImageResource(R.drawable.check_star)
-//                        isInFavorites = false
-//                        Toast.makeText(context, "removed from favorites", Toast.LENGTH_LONG).show()
-//                    }
                 }
             }
         }

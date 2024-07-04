@@ -1,12 +1,9 @@
 package com.example.ilinktrip.models
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.os.Looper
 import androidx.core.os.HandlerCompat
 import androidx.lifecycle.MutableLiveData
-import com.example.ilinktrip.application.GlobalConst
-import com.example.ilinktrip.application.ILinkTripApplication
 import com.example.ilinktrip.dao.AppLocalDatabase
 import com.example.ilinktrip.entities.User
 import com.example.ilinktrip.services.AuthService
@@ -21,12 +18,8 @@ class UserModel {
     private var mainHandler = HandlerCompat.createAsync(Looper.getMainLooper())
     private var currentUser: MutableLiveData<User?> = MutableLiveData()
 
-    enum class LoadingState {
-        LOADING,
-        NOT_LOADING
-    }
-
     companion object {
+        const val PROFILE_FOLDER_NAME = "profile_photos"
         private var _instance: UserModel = UserModel()
 
         fun instance(): UserModel {
@@ -52,7 +45,7 @@ class UserModel {
                             callback(true)
                         } else {
                             currentUser.postValue(user)
-                            callback(false)
+                            callback(true)
                         }
                     }
                 }
@@ -132,14 +125,21 @@ class UserModel {
     }
 
     fun upsertUserDetails(user: User, callback: (Boolean) -> Unit) {
-        firebaseModel.upsertUser(user, callback)
-    }
+        firebaseModel.upsertUser(user) {
+            if (it) {
+                refetchCurrentUser { isSuccessful ->
+                    mainHandler.post {
+                        if (isSuccessful) {
+                            callback(true)
+                        }
+                    }
+                }
+            }
 
-    fun updateUserDetails(user: User, callback: (isSuccessful: Boolean) -> Unit) {
-        firebaseModel.upsertUser(user, callback)
+        }
     }
 
     fun uploadProfileImage(name: String, bitmap: Bitmap, callback: (url: String?) -> Unit) {
-        this.mediaModel.uploadImage(name, "profile_photos", bitmap, callback)
+        this.mediaModel.uploadImage(name, PROFILE_FOLDER_NAME, bitmap, callback)
     }
 }

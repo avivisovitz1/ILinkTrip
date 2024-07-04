@@ -2,6 +2,7 @@ package com.example.ilinktrip.modules.registerUser
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,7 +18,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import com.example.ilinktrip.MainActivity
+import com.example.ilinktrip.application.GlobalConst
 import com.example.ilinktrip.entities.User
+import com.example.ilinktrip.viewModels.UserViewModel
 import com.ilinktrip.databinding.FragmentRegisterBinding
 import com.squareup.picasso.Picasso
 
@@ -29,6 +32,7 @@ class RegisterFragment : Fragment() {
     }
     private var binding: FragmentRegisterBinding? = null
     private var photosPicker: ActivityResultLauncher<PickVisualMediaRequest>? = null
+    private var userViewModel: UserViewModel? = null
     private var viewModel: RegisterFragmentViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +43,7 @@ class RegisterFragment : Fragment() {
                 if (uri != null) {
                     Picasso.get()
                         .load(uri)
-                        .resize(150, 150) // Resize to desired dimensions
+                        .resize(150, 150)
                         .centerInside()
                         .into(binding!!.registerPhotoIb)
                 } else {
@@ -64,38 +68,11 @@ class RegisterFragment : Fragment() {
         )
 
         val view = binding!!.root
-        val idEt = binding!!.registerIdEt
-        val emailEt = binding!!.registerEmailEt
-        val firstNameEt = binding!!.registerFirstNameEt
-        val lastNameEt = binding!!.registerLastNameEt
-        val ageEt = binding!!.registerAgeEt
-        val maleGenderRb = binding!!.registerGenderMaleRb
-        val femaleGenderRb = binding!!.registerGenderFemaleRb
-        val phoneNumberEt = binding!!.registerPhoneEt
-        val passwordEt = binding!!.registerPasswordEt
-        val passwordConfEt = binding!!.registerConfirmPasswordEt
         val choosePhotoIb = binding!!.registerPhotoIb
         val registerBtn = binding!!.registerBtn
-        val progressBar = binding!!.registerProgressBar
 
         if (userDetails != null) {
-            idEt.setText(userDetails!!.id)
-            emailEt.setText(userDetails!!.email)
-            firstNameEt.setText(userDetails!!.firstName)
-            lastNameEt.setText(userDetails!!.lastName)
-            ageEt.setText(userDetails!!.age.toString())
-
-            if (userDetails!!.gender == "male") maleGenderRb.isChecked = true
-            else if (userDetails!!.gender == "female") femaleGenderRb.isChecked = true
-
-            phoneNumberEt.setText(userDetails!!.phoneNumber)
-            passwordEt.setText(userDetails!!.password)
-            passwordConfEt.setText(userDetails!!.password)
-
-            if (userDetails!!.avatarUrl != "") {
-                Picasso.get().load(userDetails!!.avatarUrl).resize(150, 150)
-                    .into(choosePhotoIb)
-            }
+            applyUserData()
         }
 
         choosePhotoIb.setOnClickListener {
@@ -103,53 +80,102 @@ class RegisterFragment : Fragment() {
         }
 
         registerBtn.setOnClickListener {
-            val gender = if (maleGenderRb.isChecked) "male" else "female"
+            handleSaveClick()
+        }
+
+        return view
+    }
+
+    private fun applyUserData() {
+        binding!!.registerIdEt.setText(userDetails!!.id)
+        binding!!.registerEmailEt.setText(userDetails!!.email)
+        binding!!.registerFirstNameEt.setText(userDetails!!.firstName)
+        binding!!.registerLastNameEt.setText(userDetails!!.lastName)
+        binding!!.registerAgeEt.setText(userDetails!!.age.toString())
+
+        if (userDetails!!.gender == GlobalConst.GENDER_MALE) binding!!.registerGenderMaleRb.isChecked =
+            true
+        else if (userDetails!!.gender == GlobalConst.GENDER_FEMALE) binding!!.registerGenderFemaleRb.isChecked =
+            true
+
+        binding!!.registerPhoneEt.setText(userDetails!!.phoneNumber)
+        binding!!.registerPasswordEt.setText(userDetails!!.password)
+        binding!!.registerConfirmPasswordEt.setText(userDetails!!.password)
+
+        if (userDetails!!.avatarUrl != "") {
+            Picasso.get().load(userDetails!!.avatarUrl).resize(150, 150)
+                .into(binding!!.registerPhotoIb)
+        }
+    }
+
+    private fun handleSaveClick() {
+        val password = binding!!.registerPasswordEt.text.toString()
+        val confirmedPassword = binding!!.registerConfirmPasswordEt.text.toString()
+
+        if (password == confirmedPassword) {
+            val gender =
+                if (binding!!.registerGenderMaleRb.isChecked) GlobalConst.GENDER_MALE else GlobalConst.GENDER_FEMALE
 
             val user = User(
-                idEt.text.toString(),
-                emailEt.text.toString(),
-                firstNameEt.text.toString(),
-                lastNameEt.text.toString(),
-                ageEt.text.toString().toInt(),
+                binding!!.registerIdEt.text.toString(),
+                binding!!.registerEmailEt.text.toString(),
+                binding!!.registerFirstNameEt.text.toString(),
+                binding!!.registerLastNameEt.text.toString(),
+                binding!!.registerAgeEt.text.toString().toInt(),
                 gender,
-                phoneNumberEt.text.toString(),
+                binding!!.registerPhoneEt.text.toString(),
                 "",
-                passwordEt.text.toString()
+                password
             )
 
             binding!!.registerPhotoIb.isDrawingCacheEnabled = true
             binding!!.registerPhotoIb.buildDrawingCache()
             val bitmap = (binding!!.registerPhotoIb.drawable).toBitmap()
 
-            progressBar.visibility = View.VISIBLE
+            binding!!.registerProgressBar.visibility = View.VISIBLE
 
             if (userDetails == null) {
-                viewModel?.signUp(user, bitmap) { successful ->
-                    progressBar.visibility = View.GONE
-                    if (successful) {
-                        val intent = Intent(this.context, MainActivity::class.java)
-                        startActivity(intent)
-                    } else {
-                        Toast.makeText(context, "error signing up", Toast.LENGTH_LONG)
-                    }
-                }
+                registerUser(user, bitmap)
             } else {
-                viewModel?.updateUserData(user, bitmap) { isSuccessful ->
-                    progressBar.visibility = View.GONE
-                    if (isSuccessful) {
-                        Navigation.findNavController(view).popBackStack()
-                    } else {
-                        Toast.makeText(context, "error updating user data", Toast.LENGTH_LONG)
-                    }
-                }
+                updateUserDetails(user, bitmap)
+            }
+        } else {
+            Toast.makeText(
+                context,
+                "password and confirm password doesn't match",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    private fun registerUser(userDetails: User, bitmap: Bitmap) {
+        viewModel?.signUp(userDetails, bitmap) { successful ->
+            binding!!.registerProgressBar.visibility = View.GONE
+            if (successful) {
+                val intent = Intent(this.context, MainActivity::class.java)
+                startActivity(intent)
+            } else {
+                Toast.makeText(context, "error signing up", Toast.LENGTH_LONG)
+            }
+        }
+    }
+
+    private fun updateUserDetails(userDetails: User, bitmap: Bitmap) {
+        viewModel?.updateUserData(userDetails, bitmap) { isSuccessful ->
+            binding!!.registerProgressBar.visibility = View.GONE
+            if (isSuccessful) {
+                Navigation.findNavController(binding!!.root).popBackStack()
+            } else {
+                Toast.makeText(context, "error updating user data", Toast.LENGTH_LONG)
             }
         }
 
-        return view
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
         viewModel = ViewModelProvider(this)[RegisterFragmentViewModel::class.java]
+
     }
 }
