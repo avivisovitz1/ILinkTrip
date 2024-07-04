@@ -41,9 +41,11 @@ class TripsFeedFragment : Fragment() {
         binding = FragmentTripsFeedListBinding.inflate(inflater, container, false)
 
         if (isUserTrips) {
-            (requireActivity() as AppCompatActivity).supportActionBar?.title = "My Trips"
+            (requireActivity() as AppCompatActivity).supportActionBar?.title =
+                TripsFeedConst.MY_TRIPS_TITLE
         } else {
-            (requireActivity() as AppCompatActivity).supportActionBar?.title = "Trips Nearby"
+            (requireActivity() as AppCompatActivity).supportActionBar?.title =
+                TripsFeedConst.TRIPS_NEARBY_TITLE
             (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(
                 false
             )

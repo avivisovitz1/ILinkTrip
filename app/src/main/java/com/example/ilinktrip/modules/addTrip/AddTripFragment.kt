@@ -49,7 +49,7 @@ class AddTripFragment : Fragment() {
                 if (uri != null) {
                     Picasso.get()
                         .load(uri)
-                        .resize(260, 120)
+                        .resize(AddTripConst.TRIP_PHOTO_WIDTH, AddTripConst.TRIP_PHOTO_HEIGHT)
                         .centerInside()
                         .into(binding!!.tripPhotoIb)
                 } else {
@@ -94,14 +94,11 @@ class AddTripFragment : Fragment() {
             }
         }
 
-        val placeEt = binding!!.addTripPlaceEt
         startsAtEt = binding!!.addTripStartsAtEt
-        val durationEt = binding!!.addTripDurationEt
         val checkPhotoIb = binding!!.tripPhotoIb
-        val markDoneCb = binding!!.tripMarkDoneCb
         val saveBtn = binding!!.addTripBtn
 
-        startsAtEt?.setOnClickListener { view ->
+        startsAtEt?.setOnClickListener {
             openPicker()
         }
 
@@ -110,52 +107,11 @@ class AddTripFragment : Fragment() {
         }
 
         saveBtn.setOnClickListener { view ->
-            val country = countrySpinner.selectedItem as Country
-            val place = placeEt.text.toString()
-            val startsAt =
-                LocalDate.parse(startsAtEt?.text.toString(), DateUtils().getUIDateFormatter())
-            val duration = durationEt.text.toString().toInt()
-            val isDone = markDoneCb.isChecked
-
-            binding!!.tripPhotoIb.isDrawingCacheEnabled = true
-            binding!!.tripPhotoIb.buildDrawingCache()
-            val bitmap = (binding!!.tripPhotoIb.drawable).toBitmap()
-
-            val user = userViewModel?.getCurrentUser()?.value
-
-            if (user != null) {
-                binding!!.addTripProgressBar.visibility = View.VISIBLE
-                viewModel?.upsertTrip(
-                    user,
-                    trip?.id, country.name.common ?: "", place, startsAt,
-                    duration, isDone, bitmap
-                ) { isSuccessful ->
-                    binding!!.addTripProgressBar.visibility = View.GONE
-                    if (isSuccessful) {
-                        Navigation.findNavController(view).popBackStack()
-                    }
-                }
-            }
+            handleSaveClick(view)
         }
 
         if (trip != null) {
-            setSelectedCountry()
-            placeEt.setText(trip!!.place)
-            startsAtEt?.setText(
-                LocalDate.parse(
-                    trip!!.startsAt.toString(),
-                    DateUtils().getUIDateFormatter()
-                ).toString()
-            )
-            durationEt.setText(trip!!.durationInWeeks.toString())
-            markDoneCb.isChecked = trip!!.isDone
-            if (trip!!.avatarUrl != "") {
-                Picasso.get()
-                    .load(trip!!.avatarUrl)
-                    .resize(260, 120)
-                    .centerInside()
-                    .into(binding!!.tripPhotoIb)
-            }
+            applyTripData()
         }
 
         viewModel?.getCountriesList()?.observe(viewLifecycleOwner) { countries ->
@@ -170,16 +126,65 @@ class AddTripFragment : Fragment() {
         return view
     }
 
+    private fun handleSaveClick(view: View) {
+        val country = binding!!.addTripCountrySpinner.selectedItem as Country
+        val place = binding!!.addTripPlaceEt.text.toString()
+        val startsAt =
+            LocalDate.parse(startsAtEt?.text.toString(), DateUtils().getUIDateFormatter())
+        val duration = binding!!.addTripDurationEt.text.toString().toInt()
+        val isDone = binding!!.tripMarkDoneCb.isChecked
+
+        binding!!.tripPhotoIb.isDrawingCacheEnabled = true
+        binding!!.tripPhotoIb.buildDrawingCache()
+        val bitmap = (binding!!.tripPhotoIb.drawable).toBitmap()
+
+        val user = userViewModel?.getCurrentUser()?.value
+
+        if (user != null) {
+            binding!!.addTripProgressBar.visibility = View.VISIBLE
+            viewModel?.upsertTrip(
+                user,
+                trip?.id, country.name.common ?: "", place, startsAt,
+                duration, isDone, bitmap
+            ) { isSuccessful ->
+                binding!!.addTripProgressBar.visibility = View.GONE
+                if (isSuccessful) {
+                    Navigation.findNavController(view).popBackStack()
+                }
+            }
+        }
+    }
+
+    private fun applyTripData() {
+        setSelectedCountry()
+        binding!!.addTripPlaceEt.setText(trip!!.place)
+        startsAtEt?.setText(
+            LocalDate.parse(
+                trip!!.startsAt.toString(),
+                DateUtils().getUIDateFormatter()
+            ).toString()
+        )
+        binding!!.addTripDurationEt.setText(trip!!.durationInWeeks.toString())
+        binding!!.tripMarkDoneCb.isChecked = trip!!.isDone
+        if (trip!!.avatarUrl != "") {
+            Picasso.get()
+                .load(trip!!.avatarUrl)
+                .resize(AddTripConst.TRIP_PHOTO_WIDTH, AddTripConst.TRIP_PHOTO_HEIGHT)
+                .centerInside()
+                .into(binding!!.tripPhotoIb)
+        }
+    }
+
     private fun openPicker() {
 
         context?.let {
             DatePickerDialog(
                 it, { DatePicker, year: Int, month: Int, day: Int ->
                     val selectedDate = Calendar.getInstance()
-                    selectedDate.set(year, month, day)
+                    selectedDate.set(year, month + 1, day)
 
                     // Create Local Date
-                    val localDate = LocalDate.of(year, month, day)
+                    val localDate = LocalDate.of(year, month + 1, day)
 
                     // Format the LocalDateTime
                     val formattedDate = localDate.format(DateUtils().getUIDateFormatter())

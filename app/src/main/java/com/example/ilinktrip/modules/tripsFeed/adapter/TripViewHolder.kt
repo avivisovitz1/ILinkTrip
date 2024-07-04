@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
+import com.example.ilinktrip.application.GlobalConst
 import com.example.ilinktrip.interfaces.TripFeedItemClickListener
 import com.example.ilinktrip.entities.TripWithUser
 import com.ilinktrip.R
@@ -24,12 +25,15 @@ class TripViewHolder(
     private var countryFlagIv: ImageView? = null
     private var editIb: ImageButton? = null
     private var deleteIb: ImageButton? = null
+    private var isOnTripIv: ImageView? = null
 
     init {
         userNameTv = itemView.findViewById(R.id.trip_user_name_tv)
         countryPlaceTv = itemView.findViewById(R.id.trip_country_place_tv)
         userProfileIv = itemView.findViewById(R.id.trip_user_profile_iv)
         countryFlagIv = itemView.findViewById(R.id.trip_country_flag_iv)
+        isOnTripIv = itemView.findViewById(R.id.is_on_trip_Iv)
+
         editIb = itemView.findViewById(R.id.edit_trip_ib)
         deleteIb = itemView.findViewById(R.id.delete_trip_ib)
 
@@ -63,7 +67,7 @@ class TripViewHolder(
         this.userNameTv?.text =
             tripWithUser?.userDetails?.firstName + " " + tripWithUser?.userDetails?.lastName
         val avatar =
-            if (tripWithUser?.userDetails?.gender == "male") R.drawable.guy_avatar else R.drawable.girl_avatar
+            if (tripWithUser?.userDetails?.gender == GlobalConst.GENDER_MALE) R.drawable.guy_avatar else R.drawable.girl_avatar
 
         if (tripWithUser?.userDetails?.avatarUrl != "") {
             Picasso.get().load(tripWithUser?.userDetails?.avatarUrl).resize(80, 80)
@@ -81,8 +85,14 @@ class TripViewHolder(
         }
 
         if (hasActions) {
+            this.isOnTripIv?.visibility = View.GONE
             this.editIb?.visibility = View.VISIBLE
             this.deleteIb?.visibility = View.VISIBLE
+        } else {
+            val tripStatusAvatar =
+                if (tripWithUser?.trip?.isDone == true) R.drawable.done_stamp else R.drawable.currenty_arrow
+            this.isOnTripIv?.visibility = View.VISIBLE
+            this.isOnTripIv?.setImageResource(tripStatusAvatar)
         }
     }
 }

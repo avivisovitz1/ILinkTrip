@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import com.example.ilinktrip.application.GlobalConst
+import com.example.ilinktrip.entities.User
 import com.example.ilinktrip.viewModels.UserViewModel
 import com.ilinktrip.R
 import com.ilinktrip.databinding.FragmentProfileBinding
@@ -33,25 +35,14 @@ class ProfileFragment : Fragment() {
             container,
             false
         )
+
         val view = binding!!.root
-
         val user = viewModel?.getCurrentUser()?.value
+
         if (user != null) {
-            val profileIv = binding!!.profileIv
-            binding!!.profileUsernameTv.text = user!!.firstName + " " + user!!.lastName
-            binding!!.profileEmailTv.text = user!!.email
-
-            val avatar =
-                if (user!!.gender == "male") R.drawable.guy_avatar else R.drawable.girl_avatar
-
-            if (user!!.avatarUrl != "") {
-                Picasso.get().load(user!!.avatarUrl).resize(160, 160).placeholder(avatar)
-                    .into(profileIv)
-            } else {
-                profileIv.setImageResource(avatar)
-            }
+            applyProfileData(user)
         } else {
-//                raise error
+            Toast.makeText(context, "failed loading user profile", Toast.LENGTH_SHORT).show()
         }
 
         val myTripsBtn = binding!!.profileMyTripsBtn
@@ -82,10 +73,28 @@ class ProfileFragment : Fragment() {
 
         viewModel?.getToastMessage()?.observe(viewLifecycleOwner) { message ->
             Toast.makeText(context, message, Toast.LENGTH_SHORT)
-
         }
 
         return view
+    }
+
+    private fun applyProfileData(user: User?) {
+        val profileIv = binding!!.profileIv
+        binding!!.profileUsernameTv.text = user!!.firstName + " " + user!!.lastName
+        binding!!.profileEmailTv.text = user!!.email
+
+        val avatar =
+            if (user!!.gender == GlobalConst.GENDER_MALE) R.drawable.guy_avatar else R.drawable.girl_avatar
+
+        if (user!!.avatarUrl != "") {
+            Picasso.get().load(user!!.avatarUrl).resize(
+                ProfileConst.PROFILE_PHOTO_DIMENSION,
+                ProfileConst.PROFILE_PHOTO_DIMENSION
+            ).placeholder(avatar)
+                .into(profileIv)
+        } else {
+            profileIv.setImageResource(avatar)
+        }
     }
 
     override fun onAttach(context: Context) {

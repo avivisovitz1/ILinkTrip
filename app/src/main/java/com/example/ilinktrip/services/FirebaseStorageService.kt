@@ -15,9 +15,8 @@ class FirebaseStorageService {
         onFailure: () -> Unit
     ) {
         val ref = storage.getReference()
-        val imageRef = ref.child("$folderName$name.jpg")
+        val imageRef = ref.child(getPath(name, folderName))
 
-        // Get the data from an ImageView as bytes
         val baos = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val data = baos.toByteArray()
@@ -31,5 +30,24 @@ class FirebaseStorageService {
                 onSuccess(uri.toString())
             }
         }
+    }
+
+    fun deleteImage(
+        name: String, folderName: String, callback: (Boolean) -> Unit
+    ) {
+        val ref = storage.reference
+        val photoRef = ref.child(getPath(name, folderName))
+
+        photoRef.delete().addOnCompleteListener {
+            if (it.isSuccessful) {
+                callback(true)
+            } else {
+                callback(false)
+            }
+        }
+    }
+
+    private fun getPath(name: String, folderName: String): String {
+        return "$folderName$name.jpg"
     }
 }

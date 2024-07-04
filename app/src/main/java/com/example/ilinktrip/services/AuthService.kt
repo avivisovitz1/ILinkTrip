@@ -33,7 +33,7 @@ class AuthService {
                 user = auth.currentUser
                 callback(user)
             } else {
-//                Log.e("sign up error", it.message ?: "")
+                Log.e("Error Sign Up", task.exception.toString() ?: "")
                 callback(null)
             }
         }

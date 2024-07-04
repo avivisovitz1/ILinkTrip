@@ -5,7 +5,6 @@ import com.example.ilinktrip.services.FirebaseStorageService
 
 class MediaModel {
     private val storageService = FirebaseStorageService()
-
     fun uploadImage(
         name: String,
         folderName: String,
@@ -21,5 +20,11 @@ class MediaModel {
         }, {
             callback(null)
         })
+    }
+
+    fun deleteImage(name: String, folderName: String, callback: (Boolean) -> Unit) {
+        storageService.deleteImage(name, folderName) { isSuccessful ->
+            callback(isSuccessful)
+        }
     }
 }

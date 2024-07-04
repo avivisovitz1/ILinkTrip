@@ -17,7 +17,6 @@ class TripModel {
     private var tripsWithUsersList: LiveData<List<TripWithUser>>? = null
     var tripsLoadingState: MutableLiveData<LoadingState> =
         MutableLiveData(LoadingState.NOT_LOADING)
-
     private var executor = Executors.newSingleThreadExecutor()
 
     enum class LoadingState {
@@ -27,6 +26,7 @@ class TripModel {
 
 
     companion object {
+        const val TRIPS_FOLDER_NAME = "trip_photos"
         private var _instance: TripModel = TripModel()
 
         fun instance(): TripModel {
@@ -47,7 +47,7 @@ class TripModel {
         val tripLocalLastUpdate = Trip.localLastUpdate
         val userLocalLastUpdate = User.localLastUpdate
         firebaseModel.getAllTrips(tripLocalLastUpdate) { trips ->
-             firebaseModel.getUsers(listOf(), userLocalLastUpdate) { users ->
+            firebaseModel.getUsers(listOf(), userLocalLastUpdate) { users ->
                 processSyncData(users, trips)
             }
         }
@@ -96,17 +96,28 @@ class TripModel {
     fun deleteTrip(trip: Trip, callback: (Boolean) -> Unit) {
         firebaseModel.deleteTrip(trip) { isSuccessful ->
             if (isSuccessful) {
-                executor.execute {
-                    localDb.tripDao().delete(trip)
+                deleteTripImage(trip.id) {
+                    if (isSuccessful) {
+                        executor.execute {
+                            localDb.tripDao().delete(trip)
+                        }
+                        refreshAllTrips()
+                        callback(true)
+                    } else {
+                        callback(false)
+                    }
                 }
-                refreshAllTrips()
-                callback(true)
+            } else {
+                callback(false)
             }
-            callback(false)
         }
     }
 
     fun uploadTripImage(name: String, bitmap: Bitmap, callback: (url: String?) -> Unit) {
-        this.mediaModel.uploadImage(name, "trip_photos", bitmap, callback)
+        this.mediaModel.uploadImage(name, TRIPS_FOLDER_NAME, bitmap, callback)
+    }
+
+    private fun deleteTripImage(name: String, callback: (Boolean) -> Unit) {
+        this.mediaModel.deleteImage(name, TRIPS_FOLDER_NAME, callback)
     }
 }

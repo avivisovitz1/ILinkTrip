@@ -42,7 +42,7 @@ class UserViewModel : ViewModel() {
         return liveToastMessage
     }
 
-    private fun refetchCurrentUser() {
+    fun refetchCurrentUser() {
         UserModel.instance().refetchCurrentUser { isSuccessful ->
             if (!isSuccessful) {
                 toastMessage.postValue("error getting user details")
