@@ -87,8 +87,13 @@ class RegisterFragment : Fragment() {
     }
 
     private fun applyUserData() {
-        binding!!.registerIdEt.setText(userDetails!!.id)
-        binding!!.registerEmailEt.setText(userDetails!!.email)
+        val idEt = binding!!.registerIdEt
+        val emailEt = binding!!.registerEmailEt
+        val passEt = binding!!.registerPasswordEt
+        val confirmPassEt = binding!!.registerConfirmPasswordEt
+
+        idEt.setText(userDetails!!.id)
+        emailEt.setText(userDetails!!.email)
         binding!!.registerFirstNameEt.setText(userDetails!!.firstName)
         binding!!.registerLastNameEt.setText(userDetails!!.lastName)
         binding!!.registerAgeEt.setText(userDetails!!.age.toString())
@@ -98,9 +103,15 @@ class RegisterFragment : Fragment() {
         else if (userDetails!!.gender == GlobalConst.GENDER_FEMALE) binding!!.registerGenderFemaleRb.isChecked =
             true
 
+
         binding!!.registerPhoneEt.setText(userDetails!!.phoneNumber)
-        binding!!.registerPasswordEt.setText(userDetails!!.password)
-        binding!!.registerConfirmPasswordEt.setText(userDetails!!.password)
+        passEt.setText(userDetails!!.password)
+        confirmPassEt.setText(userDetails!!.password)
+
+        idEt.isEnabled = false
+        emailEt.isEnabled = false
+        passEt.isEnabled = false
+        confirmPassEt.isEnabled = false
 
         if (userDetails!!.avatarUrl != "") {
             Picasso.get().load(userDetails!!.avatarUrl).resize(150, 150)
