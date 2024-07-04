@@ -61,7 +61,7 @@ data class User(
     }
 
     companion object CREATOR : Parcelable.Creator<User> {
-        const val USERS_LOCAL_LAST_UPDATE = "usersLocalLastUpdate"
+        private const val USERS_LOCAL_LAST_UPDATE = "usersLocalLastUpdate"
         const val ID = "id"
         const val EMAIL = "email"
         const val FIRST_NAME = "firstName"

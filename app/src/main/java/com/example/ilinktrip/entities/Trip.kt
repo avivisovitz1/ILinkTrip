@@ -70,7 +70,7 @@ data class Trip(
         const val AVATAR_URL = "avatarUrl"
         const val IS_DONE = "isDone"
         const val TRIP_LAST_UPDATED = "lastUpdated"
-        const val TRIPS_LOCAL_LAST_UPDATE = "tripsLocalLastUpdate"
+        private const val TRIPS_LOCAL_LAST_UPDATE = "tripsLocalLastUpdate"
 
         var localLastUpdate: Long
             get() {

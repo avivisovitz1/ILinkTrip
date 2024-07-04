@@ -45,7 +45,7 @@ class TripsFeedFragment : Fragment() {
                 TripsFeedConst.MY_TRIPS_TITLE
         } else {
             (requireActivity() as AppCompatActivity).supportActionBar?.title =
-                TripsFeedConst.TRIPS_NEARBY_TITLE
+                TripsFeedConst.ALL_TRIPS_TITLE
             (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(
                 false
             )
